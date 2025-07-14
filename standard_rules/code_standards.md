@@ -1,13 +1,13 @@
-# Code Standardization Guidelines (PEP 8 Enhanced)
+# Code Standardization Guidelines (PEP 8 Enhanced - Project-Specific Style)
 
-This document outlines the code standardization rules to be followed. The goal is to ensure consistency, readability, and maintainability across the codebase. This version integrates the official PEP 8 style guide with our project-specific requirements.
+This document elaborates on the code standardization rules to be followed within this project, aiming to ensure consistency, readability, and maintainability across the codebase. This version integrates the official PEP 8 style guide with our project's unique style and preferences, prioritizing **readability as the highest objective**.
 
 ## 1. General Principles
 
-*   **Core Principles: Readability and Clarity First**:
-    *   Always prioritize code readability and logical clarity.
+*   **Core Principles: Readability and Clarity First (Highest Priority)**:
+    *   **Readability is the highest priority.** Always prioritize the human readability and logical clarity of the code.
     *   Strive for conciseness without compromising clarity.
-    *   Where necessary, flexibility with certain strict PEP 8 rules (e.g., line length limits) is allowed to ensure code is more understandable and maintainable.
+    *   Where necessary, flexibility with certain strict PEP 8 rules (e.g., line length limits) is permitted to ensure code is more understandable and maintainable.
 
 *   **Revision Paradigm**: All code revision tasks must strictly adhere to the following paradigm:
     1.  **Respect Existing Standards**: Always adhere to the original code's conventions, including existing comment styles, coding paradigms, and formatting. When in doubt, observe the surrounding code.
@@ -17,10 +17,10 @@ This document outlines the code standardization rules to be followed. The goal i
 *   **No In-Place Changes:** All modifications must be saved to a new file with a `_new` suffix (e.g., `original.py` becomes `original_new.py`). The original file must remain untouched.
 *   **Skipping Files:** `__init__.py` files and files containing only header comments (empty content) should be skipped.
 
-## 2. Code Layout (PEP 8)
+## 2. Code Layout (PEP 8 Enhanced)
 
 *   **Indentation**: Use **4 spaces** per indentation level. Do not use tabs.
-*   **Line Length**: Limit all lines to a maximum of **79 characters**.
+*   **Line Length**: It is recommended to limit all lines to a maximum of **79 characters**.
 *   **Line Breaks**: For long lines, break them using Python's implied line continuation inside parentheses, brackets, and braces. If necessary, use a backslash (`\`).
 *   **Blank Lines**:
     *   Top-level function and class definitions: **Two** blank lines.
@@ -44,9 +44,9 @@ This document outlines the code standardization rules to be followed. The goal i
 *   **Function Calls**: No whitespace immediately inside parentheses: `my_function(arg1, arg2)`.
 *   **Default Parameter Values**: No spaces around the `=` sign when used to indicate a keyword argument or a default parameter value.
 
-## 5. Commenting Standards (Project Specific)
+## 5. Commenting Standards (Project-Specific - Mandatory Bilingual)
 
-All new comments, especially for functions and classes, must follow our specific bilingual format.
+All new comments, especially for functions and classes, **must** follow our specific bilingual format.
 
 ### 5.1 Function Comment Style
 
@@ -131,49 +131,49 @@ class ExampleClass:
 ### 5.3 Inline Comments
 
 *   Use sparingly.
-*   专注于解释**为什么**这么做，而不是**做什么**。
-*   如果解释复杂逻辑，应使用双语。
+*   Focus on explaining **why** something is done, rather than **what** is done.
+*   If explaining complex logic, use bilingual comments.
 *   (PEP 8) An inline comment is a comment on the same line as a statement. They should be separated by at least **two spaces** from the statement.
 
-## 6. 代码格式化 (项目特定 & PEP 8)
+## 6. Code Formatting (Project-Specific & PEP 8)
 
-*   **类型提示:** 所有函数参数和返回值的类型**必须**有明确的类型提示。
-*   **复杂逻辑:** 对于复杂的单行表达式，应将其分解为多行以提高清晰度。在语句上方添加双语注释以解释其功能和目的。
+*   **Type Hinting:** All function parameters and return values **must** have explicit type hints.
+*   **Complex Logic:** For complex single-line expressions, they should be broken into multiple lines to improve clarity. Add bilingual comments above the statement to explain its function and purpose.
 
-## 7. 可读性和灵活性 (项目特定)
+## 7. Readability and Flexibility (Project-Specific - Core Style Manifestation)
 
-虽然 PEP 8 是我们的基准，但以下指南允许在函数内部为了优先保证人类可读性和逻辑清晰度而进行灵活处理。
+While PEP 8 serves as our baseline, the following guidelines allow for flexibility within functions to prioritize human readability and logical clarity. This section represents the core manifestation of this project's coding style.
 
-### 7.1 函数参数格式化
+### 7.1 Function Parameter Formatting
 
-*   **单行参数**：
-    *   **规则**：对于参数数量较少（通常为 1-3 个，不包括 `self` 或 `cls`）且整个函数签名（包括参数名、类型提示和默认值）在单行内能保持良好可读性（例如，不超过 79 个字符，或略微超出但明显更清晰）的函数，应将所有参数合并到函数定义后的同一行，以提高简洁性和可读性。
-    *   **范例**：
-        *   `libs/DB/__data_type__/main.py` 中的 `__init__(self, recommand: str) -> None:` 和 `__call__(self, data_type: str) -> str:` 方法。
-        *   `libs/DB/__database_struct__/common_metaclass.py` 中的 `__setattr__(cls, name: str, value: Any) -> None:` 方法。
-        *   `libs/DB/__database_struct__/DuckDB.py` 中的 `__init__(self, **kwargs: Any) -> None:`、`__env_init__(self, schema: Optional[str] = None) -> None:`、`__engine__(self, **kwargs: Any) -> duckdb.DuckDBPyConnection:`、`__command__(self(self, command: str, **kwargs: Any) -> pd.DataFrame:`、`__schema_info__(self, **kwargs: Any) -> pd.DataFrame:` 和 `__drop_table__(self, log: bool = False, **kwargs: Any) -> None:` 方法。
-        *   `libs/DB/__database_struct__/MySQL.py` 中的 `__init__(self, **kwargs: Any) -> None:`、`__env_init__(self, schema: Optional[str] = None) -> None:`、`__engine__(self, schema: str, **kwargs: Any) -> Engine:`、`__command__(self, command: str, **kwargs: Any) -> Tuple:`、`__schema_info__(self, **kwargs: Any) -> pd.DataFrame:` 和 `__drop_table__(self, log: bool = False, **kwargs: Any) -> None:` 方法。
+*   **Single-Line Parameters**:
+    *   **Rule**: For functions with a small number of parameters (typically 1-3, excluding `self` or `cls`) where the entire function signature (including parameter names, type hints, and default values) can maintain good readability on a single line (e.g., not exceeding 79 characters, or slightly exceeding but clearly more readable), all parameters should be combined on the same line after the function definition to enhance conciseness and readability.
+    *   **Examples**:
+        *   `libs/DB/__data_type__/main.py` methods: `__init__(self, recommand: str) -> None:` and `__call__(self, data_type: str) -> str:`. 
+        *   `libs/DB/__database_struct__/common_metaclass.py` method: `__setattr__(cls, name: str, value: Any) -> None:`. 
+        *   `libs/DB/__database_struct__/DuckDB.py` methods: `__init__(self, **kwargs: Any) -> None:`, `__env_init__(self, schema: Optional[str] = None) -> None:`, `__engine__(self, **kwargs: Any) -> duckdb.DuckDBPyConnection:`, `__command__(self(self, command: str, **kwargs: Any) -> pd.DataFrame:`, `__schema_info__(self, **kwargs: Any) -> pd.DataFrame:`, and `__drop_table__(self, log: bool = False, **kwargs: Any) -> None:`. 
+        *   `libs/DB/__database_struct__/MySQL.py` methods: `__init__(self, **kwargs: Any) -> None:`, `__env_init__(self, schema: Optional[str] = None) -> None:`, `__engine__(self, schema: str, **kwargs: Any) -> Engine:`, `__command__(self, command: str, **kwargs: Any) -> Tuple:`, `__schema_info__(self, **kwargs: Any) -> pd.DataFrame:`, and `__drop_table__(self, log: bool = False, **kwargs: Any) -> None:`. 
 
-*   **多行参数**：
-    *   **规则**：对于参数数量较多、参数名较长、包含复杂类型提示或默认值的函数，应将每个参数放置在新的一行，以确保清晰度和符合行长度限制。
-    *   **范例**：
-        *   `libs/DB/__database_struct__/DuckDB.py` 中的 `__columns_connect__`、`__read__`、`__table_exist__`、`__create_table__` 和 `__write__` 方法。
-        *   `libs/DB/__database_struct__/MySQL.py` 中的 `__columns_connect__`、`__read__`、`__table_exist__`、`__create_table__` 和 `__write__` 方法。
+*   **Multi-Line Parameters**:
+    *   **Rule**: For functions with a larger number of parameters, longer parameter names, complex type hints, or default values, each parameter should be placed on a new line to ensure clarity and adherence to line length guidelines.
+    *   **Examples**:
+        *   `libs/DB/__database_struct__/DuckDB.py` methods: `__columns_connect__`, `__read__`, `__table_exist__`, `__create_table__`, and `__write__`. 
+        *   `libs/DB/__database_struct__/MySQL.py` methods: `__columns_connect__`, `__read__`, `__table_exist__`, `__create_table__`, and `__write__`. 
 
-### 7.2 通用可读性指南
+### 7.2 General Readability Guidelines
 
-*   **函数内清晰度优先**：对于函数内的变量赋值和语句，首要目标是可读性。如果轻微偏离 PEP 8 的规范（例如，在空格或换行方面）能够改善代码的逻辑分组和直观理解，这是可以接受的。此原则同时适用于短语句和长语句。79 个字符的行长度限制通常仍应遵守，但 *如何* 断行应首先以逻辑为导向。
+*   **Clarity within Functions First**: For variable assignments and statements within functions, the primary goal is readability. Minor deviations from PEP 8 specifications (e.g., regarding spacing or line breaks) are acceptable if they improve the logical grouping and intuitive understanding of the code. This principle applies to both short and long statements. The 79-character line length limit should serve as a guideline, but *how* lines are broken should primarily be guided by logic.
 
 ---
 
-# 代码规范指南 (PEP 8 增强版)
+# 代码规范指南 (PEP 8 增强版 - 针对项目特定风格)
 
-本文档概述了需要遵循的代码规范化规则。目标是确保整个代码库的一致性、可读性和可维护性。本版本将官方 PEP 8 风格指南与我们项目的特定要求相结合。
+本文档详细阐述了本项目的代码规范化规则，旨在确保代码库的一致性、可读性和可维护性。本版本在整合官方 PEP 8 风格指南的基础上，融入了我们项目特有的风格与偏好，并以**可读性为最高优先级**。
 
 ## 1. 通用原则
 
-*   **核心原则：可读性与清晰度优先**：
-    *   始终将代码的可读性和逻辑清晰度置于首位。
+*   **核心原则：可读性与清晰度优先（最高优先级）**：
+    *   **可读性是最高优先级。** 始终将代码对人的可读性和逻辑清晰度置于首位。
     *   在不影响清晰度的前提下，追求简洁。
     *   必要时，可灵活处理 PEP 8 的某些严格规则（例如，行长度限制），以确保代码更易于理解和维护。
 
@@ -185,7 +185,7 @@ class ExampleClass:
 *   **禁止原地修改**：所有修改都必须保存到带有 `_new` 后缀的新文件中（例如，`original.py` 变为 `original_new.py`）。原始文件必须保持不变。
 *   **跳过文件**：`__init__.py` 文件和仅包含头部注释（内容为空）的文件应被跳过。
 
-## 2. 代码布局 (PEP 8)
+## 2. 代码布局 (PEP 8 增强)
 
 *   **缩进**：每个缩进级别使用 **4 个空格**。禁止使用制表符 (Tab)。
 *   **行长度**：建议将所有行的最大长度限制在 **79 个字符**以内。
@@ -212,9 +212,9 @@ class ExampleClass:
 *   **函数调用**：括号内紧邻内容，不加空格: `my_function(arg1, arg2)`。
 *   **默认参数值**：当用于指示关键字参数或默认参数值时，`=` 号周围不加空格。
 
-## 5. 注释标准 (项目特定)
+## 5. 注释标准 (项目特定 - 强制双语)
 
-所有新注释，特别是针对函数和类的注释，都必须遵循我们特定的双语格式。
+所有新注释，特别是针对函数和类的注释，都**必须**遵循我们特定的双语格式。
 
 ### 5.1 函数注释风格
 
@@ -243,7 +243,7 @@ def example_function(
     **kwargs : any
         关键字参数的中文描述。
 
-    返回
+    Returns
     -------
     dict
         返回值的中文描述。
@@ -276,7 +276,7 @@ def example_function(
 
 ### 5.2 Class Comment Style
 
-此风格对所有类都是强制性的。
+This style is mandatory for all classes.
 
 ```python
 class ExampleClass:
@@ -298,19 +298,19 @@ class ExampleClass:
 
 ### 5.3 Inline Comments
 
-*   谨慎使用。
-*   专注于解释**为什么**这么做，而不是**做什么**。
-*   如果解释复杂逻辑，应使用双语。
-*   (PEP 8) 行内注释是与语句位于同一行的注释。它们应与语句之间至少隔开**两个空格**。
+*   Use sparingly.
+*   Focus on explaining **why** something is done, rather than **what** is done.
+*   If explaining complex logic, use bilingual comments.
+*   (PEP 8) An inline comment is a comment on the same line as a statement. They should be separated by at least **two spaces** from the statement.
 
-## 6. 代码格式化 (项目特定 & PEP 8)
+## 6. Code Formatting (Project-Specific & PEP 8)
 
-*   **类型提示:** 所有函数参数和返回值的类型**必须**有明确的类型提示。
-*   **复杂逻辑:** 对于复杂的单行表达式，应将其分解为多行以提高清晰度。在语句上方添加双语注释以解释其功能和目的。
+*   **Type Hinting:** All function parameters and return values **must** have explicit type hints.
+*   **Complex Logic:** For complex single-line expressions, they should be broken into multiple lines to improve clarity. Add bilingual comments above the statement to explain its function and purpose.
 
-## 7. 可读性和灵活性 (项目特定)
+## 7. 可读性和灵活性 (项目特定 - 核心风格体现)
 
-虽然 PEP 8 是我们的基准，但以下指南允许在函数内部为了优先保证人类可读性和逻辑清晰度而进行灵活处理。
+虽然 PEP 8 是我们的基准，但以下指南允许在函数内部为了优先保证人类可读性和逻辑清晰度而进行灵活处理。这是本项目代码风格的核心体现。
 
 ### 7.1 函数参数格式化
 
@@ -330,4 +330,4 @@ class ExampleClass:
 
 ### 7.2 通用可读性指南
 
-*   **函数内清晰度优先**：对于函数内的变量赋值和语句，首要目标是可读性。如果轻微偏离 PEP 8 的规范（例如，在空格或换行方面）能够改善代码的逻辑分组和直观理解，这是可以接受的。此原则同时适用于短语句和长语句。79 个字符的行长度限制通常仍应遵守，但 *如何* 断行应首先以逻辑为导向。
+*   **函数内清晰度优先**：对于函数内的变量赋值和语句，首要目标是可读性。如果轻微偏离 PEP 8 的规范（例如，在空格或换行方面）能够改善代码的逻辑分组和直观理解，这是可以接受的。此原则同时适用于短语句和长语句。79 个字符的行长度限制应作为指导原则，但 *如何* 断行应首先以逻辑为导向。

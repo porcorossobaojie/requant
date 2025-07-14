@@ -39,10 +39,7 @@ class main:
     def __get_all_parents_dict__(cls) -> List[Type[Any]]:
         return [parent for parent in cls.mro() if parent is not object][::-1]
 
-    def __parameters__(
-        self,
-        *args: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def __parameters__(self, *args: Dict[str, Any]) -> Dict[str, Any]:
         """
         ===========================================================================
 

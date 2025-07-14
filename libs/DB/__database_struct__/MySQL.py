@@ -26,19 +26,11 @@ class main(meta, config, metaclass=AutoPropagateMeta):
     __data_trans__ = data_trans('MySQL')
     __internal_attrs__ = list(filter_class_attrs(config).keys())
 
-    def __init__(
-        self,
-        **kwargs: Any
-    ) -> None:
-        self.__internal_attrs__ = list(
-            set(self.__internal_attrs__) | set(kwargs.keys())
-        )
+    def __init__(self, **kwargs: Any) -> None:
+        self.__internal_attrs__ = list(set(self.__internal_attrs__) | set(kwargs.keys()))
         [setattr(self, i, j) for i, j in kwargs.items()]
 
-    def __env_init__(
-        self,
-        schema: Optional[str] = None
-    ) -> None:
+    def __env_init__(self, schema: Optional[str] = None) -> None:
         schema = self.schema if schema is None else schema
         self.__command__(f'CREATE SCHEMA IF NOT EXISTS {schema}')
 
@@ -87,11 +79,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         engine = create_engine(connection_string)
         return engine
 
-    def __command__(
-        self,
-        command: str,
-        **kwargs: Any
-    ) -> Tuple:
+    def __command__(self, command: str, **kwargs: Any) -> Tuple:
         """
         ===========================================================================
 
@@ -158,9 +146,8 @@ class main(meta, config, metaclass=AutoPropagateMeta):
             comment_position = 1 if comment_position is None else comment_position
             x = {}
             for i, j in columns_obj.items():
-                x[i] = [
-                    self.__data_trans__(j[type_position].upper()),
-                    '' if len(j) == 1 else j[comment_position]
+                x[i] = [self.__data_trans__(j[type_position].upper()),
+                '' if len(j) == 1 else j[comment_position]
                 ]
             x = ', \n'.join(
                 [f'`{i}` {j[0]} DEFAULT NULL COMMENT "{j[1]}"' for i, j in x.items()]
@@ -232,9 +219,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
 
             parameters['columns'] = columns
 
-            sql_command = 'SELECT {columns} FROM {schema}.{table}'.format(
-                **parameters
-            )
+            sql_command = 'SELECT {columns} FROM {schema}.{table}'.format(**parameters)
             if parameters.get('where', None) is not None:
                 sql_command = '{} WHERE {where}'.format(sql_command, **parameters)
 
@@ -252,9 +237,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
                         'offset': offset,
                         'sql_command': sql_command
                     }
-                    order = (
-                        '{sql_command} LIMIT {chunksize} OFFSET {offset}'
-                    ).format_map(order_params)
+                    order = ('{sql_command} LIMIT {chunksize} OFFSET {offset}').format_map(order_params)
                     obj = pd.read_sql(order, con=engine)
                     chunks.append(obj)
                     if len(obj) < parameters.get('chunksize', 1):
@@ -453,13 +436,12 @@ class main(meta, config, metaclass=AutoPropagateMeta):
             if partition is None:
                 primary_command = (
                     f'`{primary_key}` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, '
-                )
+                    )
             else:
                 partition_key = list(partition.keys())[0]
                 primary_command = (
-                    f'`{primary_key}` INT NOT NULL AUTO_INCREMENT, '
-                    f'UNIQUE KEY (`{primary_key}`, `{partition_key}`), '
-                )
+                    f'`{primary_key}` INT NOT NULL AUTO_INCREMENT, UNIQUE KEY (`{primary_key}`, `{partition_key}`), '
+                    )
             sql_command += primary_command
 
         columns_text = self.__columns_connect__(parameters.get('columns', {}))
@@ -467,10 +449,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
 
         if keys:
             key_list = [keys] if isinstance(keys, str) else keys
-            key_defs = [
-                f'KEY (`{i}`)' if isinstance(i, str) else f'KEY (`{",".join(i)}`)'
-                for i in key_list
-            ]
+            key_defs = [f'KEY (`{i}`)' if isinstance(i, str) else f'KEY (`{",".join(i)}`)' for i in key_list]
             keys_command = ',\n' + ',\n'.join(key_defs)
             sql_command += keys_command
 
@@ -493,9 +472,8 @@ class main(meta, config, metaclass=AutoPropagateMeta):
             partition_values_str.append('MAXVALUE')
 
             partition_parts = [
-                f'PARTITION p{i} VALUES LESS THAN ({j})'
-                for i, j in enumerate(partition_values_str)
-            ]
+                f'PARTITION p{i} VALUES LESS THAN ({j})' for i, j in enumerate(partition_values_str)
+                ]
 
             partition_command = key_part + ',\n'.join(partition_parts) + ')'
             sql_command += partition_command
@@ -524,7 +502,5 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         engine.dispose()
         if log:
             print(
-                "Written DataFrame to <{schema}.{table}>: {count} records.".format(
-                    count=len(df_obj), **parameters
-                )
+                "Written DataFrame to <{schema}.{table}>: {count} records.".format(count=len(df_obj), **parameters)
             )

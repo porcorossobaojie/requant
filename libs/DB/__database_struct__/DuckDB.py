@@ -21,26 +21,17 @@ class main(meta, config, metaclass=AutoPropagateMeta):
     __data_trans__ = data_trans('DuckDB')
     __internal_attrs__ = list(filter_class_attrs(config).keys())
 
-    def __init__(
-        self,
-        **kwargs: Any
-    ) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         self.__internal_attrs__ = list(
             set(self.__internal_attrs__) | set(kwargs.keys())
         )
         [setattr(self, i, j) for i, j in kwargs.items()]
 
-    def __env_init__(
-        self,
-        schema: Optional[str] = None
-    ) -> None:
+    def __env_init__(self, schema: Optional[str] = None) -> None:
         schema = self.schema if schema is None else schema
         self.__command__(f'CREATE SCHEMA IF NOT EXISTS {schema}')
 
-    def __engine__(
-        self,
-        **kwargs: Any
-    ) -> duckdb.DuckDBPyConnection:
+    def __engine__(self, **kwargs: Any) -> duckdb.DuckDBPyConnection:
         parameters = self.__parameters__(kwargs)
         database = "{path}/{database}.duckdb".format(**parameters)
         x = duckdb.connect(database=database)
@@ -71,13 +62,10 @@ class main(meta, config, metaclass=AutoPropagateMeta):
             x = {}
             for i, j in columns_obj.items():
                 x[i] = [
-                    self.__data_trans__(j[type_position].upper()),
-                    '' if len(j) == 1 else j[comment_position]
+                    self.__data_trans__(j[type_position].upper()), '' if len(j) == 1 else j[comment_position]
                 ]
             x = (
-                ', \n'.join(
-                    [f'{i} {j[0]} DEFAULT NULL' for i, j in x.items()]
-                ),
+                ', \n'.join([f'{i} {j[0]} DEFAULT NULL' for i, j in x.items()]),
                 {i: j[1] for i, j in x.items()}
             )
         return x
@@ -159,10 +147,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
             return x
         return wraps_function()
 
-    def __schema_info__(
-        self,
-        **kwargs: Any
-    ) -> pd.DataFrame:
+    def __schema_info__(self, **kwargs: Any ) -> pd.DataFrame:
         """
         ===========================================================================
 
@@ -302,11 +287,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         if log:
             print(sql_command)
 
-    def __create_table__(
-        self,
-        log: bool = False,
-        **kwargs: Any
-    ) -> None:
+    def __create_table__(self, log: bool = False, **kwargs: Any) -> None:
         args = inspect.getargvalues(inspect.currentframe())
         args = {i: args.locals[i] for i in args.args if i != 'self'}
         parameters = self.__parameters__(args, kwargs)
@@ -355,12 +336,10 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         con.register('df_obj', df_obj)
 
         insert_statement = (
-            "INSERT INTO {database}.{schema}.{table} "
-            "BY NAME SELECT * FROM df_obj"
+            "INSERT INTO {database}.{schema}.{table} BY NAME SELECT * FROM df_obj"
         ).format(**parameters)
         create_statement = (
-            "CREATE OR REPLACE TABLE {database}.{schema}.{table} "
-            "AS SELECT * FROM df_obj"
+            "CREATE OR REPLACE TABLE {database}.{schema}.{table} AS SELECT * FROM df_obj"
         ).format(**parameters)
 
         if table_exist:
@@ -370,10 +349,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
                     self.__create_table__(**parameters)
                     con.execute(insert_statement)
                 except Exception:
-                    print(
-                        'Function: __create_table__ Failed. ' \
-                        'Create table automatic.'
-                    )
+                    print('Function: __create_table__ Failed. \nCreate table automatic.')
                     con.execute(create_statement)
 
             elif if_exists == 'append':
@@ -381,24 +357,15 @@ class main(meta, config, metaclass=AutoPropagateMeta):
             elif if_exists == 'fail':
                 raise ValueError('Table already existed.')
             else:
-                raise ValueError(
-                    "if_exists must be in ['fail', 'replace', 'append']"
-                )
+                raise ValueError("if_exists must be in ['fail', 'replace', 'append']")
         else:
             try:
                 self.__create_table__(**parameters)
                 con.execute(insert_statement)
             except Exception:
-                print(
-                    'Function: __create_table__ Failed. ' \
-                    'Create table automatic.'
-                )
+                print('Function: __create_table__ Failed. \nCreate table automatic.')
                 con.execute(create_statement)
 
         con.close()
         if log:
-            print(
-                "Written DataFrame to <{schema}.{table}>: {count} records.".format(
-                    count=len(df_obj), **parameters
-                )
-            )
+            print("Written DataFrame to <{schema}.{table}>: {count} records.".format(count=len(df_obj), **parameters))
