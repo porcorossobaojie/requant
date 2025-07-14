@@ -9,10 +9,11 @@ from typing import Optional, Dict, Any, List, Tuple
 from functools import wraps
 import time
 
+
 def timing_decorator(
     schema: Optional[str] = None, 
     table: Optional[str] = None, 
-    show_time: bool = False
+    show_time: bool = False,
 ):
     """
     ===========================================================================
@@ -45,7 +46,10 @@ def timing_decorator(
     """
     def decorator(func):
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(
+            *args: any, 
+            **kwargs: any
+        ):
             if show_time:
                 start_time = time.time()
                 result = func(*args, **kwargs)
