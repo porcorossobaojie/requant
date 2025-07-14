@@ -3,17 +3,15 @@
 Created on Wed Feb 12 21:31:13 2025
 
 @author: Porco Rosso
+
 """
 
 import re
 from typing import ClassVar, Dict, List, Any
 
-import numpy as np
-
-
 def __filter_class_attrs__(
-    class_object: ClassVar
-) -> Dict[str, Any]: 
+    class_object: ClassVar,
+) -> Dict[str, Any]:
     """
     ===========================================================================
 
@@ -45,21 +43,27 @@ def __filter_class_attrs__(
 
     ---------------------------------------------------------------------------
     """
-    def check_double_underscore(s: str) -> bool:
+    def check_double_underscore(
+        s: str
+    ) -> bool:
         pattern = r'^__.*?__$'
         return bool(re.match(pattern, s))
     
-    dic = {i:j for i, j in class_object.__dict__.items() if not check_double_underscore(i)}
+    dic = {
+        i:j for i, j in class_object.__dict__.items() 
+        if not check_double_underscore(i)
+    }
     return dic
 
 
 def __merge_dicts__(
-    *dicts: Dict[str, Any]
+    *dicts: Dict[str, Any],
 ) -> Dict[str, Any]:
     """
     ===========================================================================
 
-    Merges multiple dictionaries into one, with later dictionaries overriding earlier ones for common keys.
+    Merges multiple dictionaries into one, with later dictionaries overriding 
+    earlier ones for common keys.
 
     Parameters
     ----------
@@ -89,14 +93,21 @@ def __merge_dicts__(
     """
     all_keys = set().union(*dicts)
     
-    def get_non_none_value(key: str) -> Any:
-        return next((d[key] for d in reversed(dicts) if key in d and d[key] is not None), None)
+    def get_non_none_value(
+        key: str
+    ) -> Any:
+        return next(
+            (d[key] for d in reversed(dicts) if key in d and d[key] is not None), 
+            None
+        )
     
-    return {key: get_non_none_value(key) for key in all_keys}
+    return {
+        key: get_non_none_value(key) for key in all_keys
+    }
 
 
 def __flatten_list__(
-    lst: List[Any]
+    lst: List[Any],
 ) -> List[Any]:
     """
     ===========================================================================
@@ -129,4 +140,6 @@ def __flatten_list__(
 
     ---------------------------------------------------------------------------
     """
-    return sum((__flatten_list__(i) if isinstance(i, list) else [i] for i in lst), [])
+    return sum(
+        (__flatten_list__(i) if isinstance(i, list) else [i] for i in lst), []
+    )
