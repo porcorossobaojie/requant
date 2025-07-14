@@ -1,0 +1,11 @@
+# Spyder 相关的临时文件和配置备份
+.spyproject/
+*.bak
+.ipython/
+.conda/
+__pycache__/
+# 其他可能不需要提交的日志或输出文件
+*.log
+*.csv
+output/
+local
