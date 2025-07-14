@@ -81,11 +81,7 @@ class main:
         ]
         return merge_dicts(*all_sources)
 
-    def __call__(
-        self,
-        replace: bool = False,
-        **kwargs: Any
-    ) -> Optional['main']:
+    def __call__(self, replace: bool = False, **kwargs: Any) -> Optional['main']:
         """
         ===========================================================================
 

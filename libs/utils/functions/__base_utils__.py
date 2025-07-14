@@ -7,11 +7,9 @@ Created on Wed Feb 12 21:31:13 2025
 """
 
 import re
-from typing import ClassVar, Dict, List, Any
+from typing import Dict, List, Any, Type
 
-def __filter_class_attrs__(
-    class_object: ClassVar,
-) -> Dict[str, Any]:
+def __filter_class_attrs__(class_object: Type[Any]) -> Dict[str, Any]:
     """
     ===========================================================================
 
@@ -19,7 +17,7 @@ def __filter_class_attrs__(
 
     Parameters
     ----------
-    class_object : ClassVar
+    class_object : Type[Any]
         The class object from which to extract attributes.
 
     Returns
@@ -33,7 +31,7 @@ def __filter_class_attrs__(
 
     参数
     ----------
-    class_object : ClassVar
+    class_object : Type[Any]
         要从中提取属性的类对象。
 
     返回
@@ -43,11 +41,8 @@ def __filter_class_attrs__(
 
     ---------------------------------------------------------------------------
     """
-    def check_double_underscore(
-        s: str
-    ) -> bool:
-        pattern = r'^__.*?__$'
-        return bool(re.match(pattern, s))
+    def check_double_underscore(s: str) -> bool:
+        return s.startswith('__') and s.endswith('__') and len(s) > 4
     
     dic = {
         i:j for i, j in class_object.__dict__.items() 
@@ -56,9 +51,7 @@ def __filter_class_attrs__(
     return dic
 
 
-def __merge_dicts__(
-    *dicts: Dict[str, Any],
-) -> Dict[str, Any]:
+def __merge_dicts__(*dicts: Dict[str, Any],) -> Dict[str, Any]:
     """
     ===========================================================================
 
@@ -106,9 +99,7 @@ def __merge_dicts__(
     }
 
 
-def __flatten_list__(
-    lst: List[Any],
-) -> List[Any]:
+def __flatten_list__(lst: List[Any],) -> List[Any]:
     """
     ===========================================================================
 

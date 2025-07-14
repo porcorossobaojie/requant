@@ -30,11 +30,7 @@ class AutoPropagateMeta(type):
 
     ---------------------------------------------------------------------------
     """
-    def __setattr__(
-        cls,
-        name: str,
-        value: Any
-    ) -> None:
+    def __setattr__(cls, name: str, value: Any) -> None:
         """
         ===========================================================================
 
@@ -66,9 +62,7 @@ class AutoPropagateMeta(type):
         pass
 
 
-def set_main_class_ref(
-    main_instance_ref: Any
-) -> None:
+def set_main_class_ref(main_instance_ref: Any) -> None:
     """
     ===========================================================================
 

@@ -1,5 +1,3 @@
-#
-
 from libs.utils.functions.__base_utils__ import (
     
     __filter_class_attrs__ as filter_class_attrs, 

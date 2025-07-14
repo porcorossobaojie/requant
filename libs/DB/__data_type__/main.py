@@ -103,10 +103,7 @@ class main:
     MySQL: Type[MySQL] = MySQL
     DuckDB: Type[DuckDB] = DuckDB
 
-    def __init__(
-        self,
-        recommand: str
-    ) -> None:
+    def __init__(self, recommand: str) -> None:
         """
         ===========================================================================
 
@@ -130,10 +127,7 @@ class main:
         """
         self.recommand = recommand
 
-    def __call__(
-        self,
-        data_type: str
-    ) -> str:
+    def __call__(self, data_type: str) -> str:
         """
         ===========================================================================
 

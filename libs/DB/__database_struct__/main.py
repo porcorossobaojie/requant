@@ -64,11 +64,7 @@ def setup_dynamic_properties(cls: Type[Any]) -> Type[Any]:
     """
     cls._dynamic_properties_cache = set()
 
-    @classmethod
-    def _add_single_dynamic_property(
-        inner_cls: Type[Any],
-        attr_name: str
-    ) -> None:
+    def _add_single_dynamic_property(inner_cls: Type[Any], attr_name: str) -> None:
         if attr_name in inner_cls._dynamic_properties_cache:
             return
 

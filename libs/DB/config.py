@@ -5,7 +5,7 @@ Created on Sun Jul 13 09:37:50 2025
 @author: admin
 """
 
-from typing import Any, Dict, Type
+from typing import Any, Dict
 
 
 class MySQL:
@@ -27,8 +27,8 @@ class MySQL:
     host: str = '127.0.0.1'
     port: int = 3306
 
-    user: Type[str] = str
-    password: Type[str] = str
+    user: str = ''
+    password: str = ''
 
     @classmethod
     def __URL__(

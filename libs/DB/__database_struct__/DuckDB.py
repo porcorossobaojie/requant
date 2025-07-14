@@ -44,17 +44,18 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         x = duckdb.connect(database=database)
         return x
 
-    def __command__(
-        self,
-        command: str,
-        **kwargs: Any
-    ) -> pd.DataFrame:
+    def __command__(self, command: str, **kwargs: Any) -> pd.DataFrame:
         engine = self.__engine__(**kwargs)
         x = engine.execute(command).fetchdf()
         engine.close()
         return x
     
-    def __columns_connect__(self, columns_obj, type_position=None, comment_position=None):
+    def __columns_connect__(
+        self,
+        columns_obj,
+        type_position=None,
+        comment_position=None
+    ):
         if columns_obj is None:
             x = '*'
         elif isinstance(columns_obj, str):
@@ -257,11 +258,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         ]
         return True if len(df_filtered) > 0 else False
 
-    def __drop_table__(
-        self,
-        log: bool = False,
-        **kwargs: Any
-    ) -> None:
+    def __drop_table__(self, log: bool = False, **kwargs: Any) -> None:
         """
         ===========================================================================
 

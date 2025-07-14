@@ -47,8 +47,8 @@ def timing_decorator(
     def decorator(func):
         @wraps(func)
         def wrapper(
-            *args: any, 
-            **kwargs: any
+            *args: Any, 
+            **kwargs: Any
         ):
             if show_time:
                 start_time = time.time()

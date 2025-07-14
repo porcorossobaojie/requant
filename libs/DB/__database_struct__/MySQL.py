@@ -261,10 +261,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
                 return pd.read_sql(sql_command, con=engine)
         return wraps_function()
 
-    def __schema_info__(
-        self,
-        **kwargs: Any
-    ) -> pd.DataFrame:
+    def __schema_info__(self, **kwargs: Any) -> pd.DataFrame:
         """
         ===========================================================================
 
@@ -365,11 +362,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         ]
         return True if len(df_filtered) > 0 else False
 
-    def __drop_table__(
-        self,
-        log: bool = False,
-        **kwargs: Any
-    ) -> None:
+    def __drop_table__(self, log: bool = False, **kwargs: Any) -> None:
         """
         ===========================================================================
 
@@ -401,14 +394,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         if log:
             print(sql_command)
 
-    def __create_table__(
-        self,
-        primary_key: Optional[str] = None,
-        keys: Optional[List[str]] = None,
-        partition: Optional[Dict[str, List[Any]]] = None,
-        log: bool = False,
-        **kwargs: Any
-    ) -> None:
+    def __create_table__(self, primary_key: Optional[str] = None, keys: Optional[List[str]] = None, partition: Optional[Dict[str, List[Any]]] = None, log: bool = False, **kwargs: Any) -> None:
         """
         ===========================================================================
 
