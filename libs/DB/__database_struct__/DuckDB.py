@@ -5,7 +5,7 @@ Created on Sun Jul 13 13:25:09 2025
 @author: Porco Rosso
 """
 import inspect
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Any, Callable, Dict, List, Literal, Optional, Tuple
 
 import duckdb
 import pandas as pd
@@ -25,8 +25,10 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         self,
         **kwargs: Any
     ) -> None:
-        self.__internal_attrs__ = list(set(self.__internal_attrs__) | set(kwargs.keys()))
-        [setattr(self, i, j) for i,j in kwargs.items()]
+        self.__internal_attrs__ = list(
+            set(self.__internal_attrs__) | set(kwargs.keys())
+        )
+        [setattr(self, i, j) for i, j in kwargs.items()]
 
     def __env_init__(
         self,
@@ -67,9 +69,17 @@ class main(meta, config, metaclass=AutoPropagateMeta):
             comment_position = 1 if comment_position is None else comment_position
             
             x = {}
-            for i,j in columns_obj.items():
-                x[i] = [self.__data_trans__(j[type_position].upper()), '' if len(j) == 1 else j[comment_position]]
-            x = ', \n'.join([f'{i} {j[0]} DEFAULT NULL' for i,j in x.items()]), {i:j[1] for i,j in x.items()}
+            for i, j in columns_obj.items():
+                x[i] = [
+                    self.__data_trans__(j[type_position].upper()),
+                    '' if len(j) == 1 else j[comment_position]
+                ]
+            x = (
+                ', \n'.join(
+                    [f'{i} {j[0]} DEFAULT NULL' for i, j in x.items()]
+                ),
+                {i: j[1] for i, j in x.items()}
+            )
         return x
 
     def __read__(
@@ -361,7 +371,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
                     con.execute(insert_statement)
                 except Exception:
                     print(
-                        'Function: __create_table__ Failed. '
+                        'Function: __create_table__ Failed. ' \
                         'Create table automatic.'
                     )
                     con.execute(create_statement)
@@ -380,7 +390,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
                 con.execute(insert_statement)
             except Exception:
                 print(
-                    'Function: __create_table__ Failed. '
+                    'Function: __create_table__ Failed. ' \
                     'Create table automatic.'
                 )
                 con.execute(create_statement)

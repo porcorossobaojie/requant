@@ -157,9 +157,14 @@ class main(meta, config, metaclass=AutoPropagateMeta):
             type_position = 0 if type_position is None else type_position
             comment_position = 1 if comment_position is None else comment_position
             x = {}
-            for i,j in columns_obj.items():
-                x[i] = [self.__data_trans__(j[type_position].upper()), '' if len(j) == 1 else j[comment_position]]
-            x = ', \n'.join([f'`{i}` {j[0]} DEFAULT NULL COMMENT "{j[1]}"' for i,j in x.items()])
+            for i, j in columns_obj.items():
+                x[i] = [
+                    self.__data_trans__(j[type_position].upper()),
+                    '' if len(j) == 1 else j[comment_position]
+                ]
+            x = ', \n'.join(
+                [f'`{i}` {j[0]} DEFAULT NULL COMMENT "{j[1]}"' for i, j in x.items()]
+            )
         return x
 
     def __read__(
@@ -394,7 +399,14 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         if log:
             print(sql_command)
 
-    def __create_table__(self, primary_key: Optional[str] = None, keys: Optional[List[str]] = None, partition: Optional[Dict[str, List[Any]]] = None, log: bool = False, **kwargs: Any) -> None:
+    def __create_table__(
+        self,
+        primary_key: Optional[str] = None,
+        keys: Optional[List[str]] = None,
+        partition: Optional[Dict[str, List[Any]]] = None,
+        log: bool = False,
+        **kwargs: Any
+    ) -> None:
         """
         ===========================================================================
 

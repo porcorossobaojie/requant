@@ -59,7 +59,7 @@ class AutoPropagateMeta(type):
         super().__setattr__(name, value)
         # In the current design, direct notification to the main instance
         # is not necessary as attribute access is dynamically forwarded.
-        pass
+        pass  # In the current design, direct notification to the main instance
 
 
 def set_main_class_ref(main_instance_ref: Any) -> None:
