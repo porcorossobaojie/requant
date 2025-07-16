@@ -32,7 +32,7 @@ class main(__DB_CLASS__, META_DATABASE):
         self.__env_init__()
 
     @property
-    def columns(self) -> Dict[str: {str: List[str]}]:
+    def columns(self) -> Dict:
         if isinstance(self.columns_information, dict):
             x = merge_dicts(*list(self.columns_information.values()))
         else:
