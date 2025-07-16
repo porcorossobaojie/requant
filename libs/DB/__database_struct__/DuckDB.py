@@ -11,13 +11,12 @@ import duckdb
 import pandas as pd
 
 from libs.DB.__data_type__.main import main as data_trans
-from libs.DB.__database_struct__.common_metaclass import AutoPropagateMeta
 from libs.DB.__database_struct__.meta import main as meta
 from libs.DB.config import DuckDB as config
 from libs.utils.functions import filter_class_attrs
 
 
-class main(meta, config, metaclass=AutoPropagateMeta):
+class main(meta, config):
     __data_trans__ = data_trans('DuckDB')
     __internal_attrs__ = list(filter_class_attrs(config).keys())
 
@@ -29,7 +28,9 @@ class main(meta, config, metaclass=AutoPropagateMeta):
 
     def __env_init__(self, schema: Optional[str] = None) -> None:
         schema = self.schema if schema is None else schema
-        self.__command__(f'CREATE SCHEMA IF NOT EXISTS {schema}')
+        parameters = self.__parameters__()
+        with self.__engine__(**parameters) as con:
+            con.execute(f'CREATE SCHEMA IF NOT EXISTS {schema}')
 
     def __engine__(self, **kwargs: Any) -> duckdb.DuckDBPyConnection:
         parameters = self.__parameters__(kwargs)
@@ -38,10 +39,9 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         return x
 
     def __command__(self, command: str, **kwargs: Any) -> pd.DataFrame:
-        engine = self.__engine__(**kwargs)
-        x = engine.execute(command).fetchdf()
-        engine.close()
-        return x
+        with self.__engine__(**kwargs) as engine:
+            x = engine.execute(command).fetchdf()
+            return x
     
     def __columns_connect__(
         self,
@@ -130,6 +130,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         )
         def wraps_function() -> pd.DataFrame:
             columns = parameters.get('columns', None)
+            columns = list(columns.keys()) if isinstance(columns, dict) else columns
             columns = self.__columns_connect__(columns)
 
             parameters['columns'] = columns
@@ -143,7 +144,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
 
             if log:
                 print(command)
-            x = self.__command__(command, **parameters)
+            x = self.__command__(command, read_only=True, **parameters)
             return x
         return wraps_function()
 
@@ -292,7 +293,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         args = {i: args.locals[i] for i in args.args if i != 'self'}
         parameters = self.__parameters__(args, kwargs)
 
-        command = 'CREATE TABLE {schema}.{table} (\n'.format(**parameters)
+        command = 'CREATE TABLE IF NOT EXISTS {schema}.{table} (\n'.format(**parameters)
 
         columns = self.__columns_connect__(parameters.get('columns', {}))
         if isinstance(columns, tuple):
@@ -323,7 +324,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         self,
         df_obj: pd.DataFrame,
         if_exists: Literal['fail', 'replace', 'append'] = 'append',
-        index: bool = True,
+        index: bool = False,
         log: bool = False,
         **kwargs: Any
     ) -> None:
@@ -332,40 +333,41 @@ class main(meta, config, metaclass=AutoPropagateMeta):
 
         parameters = self.__parameters__(kwargs)
         table_exist = self.__table_exist__(**parameters)
-        con = self.__engine__(**parameters)
-        con.register('df_obj', df_obj)
-
-        insert_statement = (
-            "INSERT INTO {database}.{schema}.{table} BY NAME SELECT * FROM df_obj"
-        ).format(**parameters)
-        create_statement = (
-            "CREATE OR REPLACE TABLE {database}.{schema}.{table} AS SELECT * FROM df_obj"
-        ).format(**parameters)
-
-        if table_exist:
-            if if_exists == 'replace':
-                self.__drop_table__(**parameters)
+        
+        with self.__engine__(**parameters) as con:
+            con.register('df_obj', df_obj)
+    
+            insert_statement = (
+                "INSERT INTO {database}.{schema}.{table} BY NAME SELECT * FROM df_obj"
+            ).format(**parameters)
+            create_statement = (
+                "CREATE OR REPLACE TABLE {database}.{schema}.{table} AS SELECT * FROM df_obj"
+            ).format(**parameters)
+    
+            if table_exist:
+                if if_exists == 'replace':
+                    self.__drop_table__(**parameters)
+                    try:
+                        self.__create_table__(**parameters)
+                        con.execute(insert_statement)
+                    except Exception:
+                        print('Function: __create_table__ Failed. \nCreate table automatic.')
+                        con.execute(create_statement)
+    
+                elif if_exists == 'append':
+                    con.execute(insert_statement)
+                elif if_exists == 'fail':
+                    raise ValueError('Table already existed.')
+                else:
+                    raise ValueError("if_exists must be in ['fail', 'replace', 'append']")
+            else:
                 try:
                     self.__create_table__(**parameters)
                     con.execute(insert_statement)
                 except Exception:
                     print('Function: __create_table__ Failed. \nCreate table automatic.')
                     con.execute(create_statement)
-
-            elif if_exists == 'append':
-                con.execute(insert_statement)
-            elif if_exists == 'fail':
-                raise ValueError('Table already existed.')
-            else:
-                raise ValueError("if_exists must be in ['fail', 'replace', 'append']")
-        else:
-            try:
-                self.__create_table__(**parameters)
-                con.execute(insert_statement)
-            except Exception:
-                print('Function: __create_table__ Failed. \nCreate table automatic.')
-                con.execute(create_statement)
-
-        con.close()
+    
+            con.close()
         if log:
             print("Written DataFrame to <{schema}.{table}>: {count} records.".format(count=len(df_obj), **parameters))

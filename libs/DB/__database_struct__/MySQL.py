@@ -16,13 +16,12 @@ from numpy import isreal
 from sqlalchemy import Engine, create_engine
 
 from libs.DB.__data_type__.main import main as data_trans
-from libs.DB.__database_struct__.common_metaclass import AutoPropagateMeta
 from libs.DB.__database_struct__.meta import main as meta
 from libs.DB.config import MySQL as config
 from libs.utils.functions import filter_class_attrs
 
 
-class main(meta, config, metaclass=AutoPropagateMeta):
+class main(meta, config):
     __data_trans__ = data_trans('MySQL')
     __internal_attrs__ = list(filter_class_attrs(config).keys())
 
@@ -215,6 +214,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         )
         def wraps_function() -> pd.DataFrame:
             columns = parameters.get('columns', None)
+            columns = list(columns.keys()) if isinstance(columns, dict) else columns
             columns = self.__columns_connect__(columns)
 
             parameters['columns'] = columns
@@ -431,7 +431,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         args = {i: args.locals[i] for i in args.args if i != 'self'}
         parameters = self.__parameters__(args, kwargs)
 
-        sql_command = 'CREATE TABLE `{schema}`.`{table}` (\n'.format(**parameters)
+        sql_command = 'CREATE TABLE IF NOT EXISTS `{schema}`.`{table}` (\n'.format(**parameters)
         if primary_key:
             if partition is None:
                 primary_command = (
@@ -448,9 +448,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         sql_command += columns_text
 
         if keys:
-            key_list = [keys] if isinstance(keys, str) else keys
-            key_defs = [f'KEY (`{i}`)' if isinstance(i, str) else f'KEY (`{",".join(i)}`)' for i in key_list]
-            keys_command = ',\n' + ',\n'.join(key_defs)
+            keys_command = ',\n' + ',\n'.join([f'key ({i})' if isinstance(i, str) else f'key({",".join(i)})' for i in ([keys] if isinstance(keys, str) else keys)])
             sql_command += keys_command
 
         char_col_command = (
@@ -486,7 +484,7 @@ class main(meta, config, metaclass=AutoPropagateMeta):
         self,
         df_obj: pd.DataFrame,
         if_exists: Literal['fail', 'replace', 'append'] = 'append',
-        index: bool = True,
+        index: bool = False,
         log: bool = False,
         **kwargs: Any
     ) -> None:

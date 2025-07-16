@@ -5,7 +5,7 @@ Created on Sun Jul 13 09:37:50 2025
 @author: admin
 """
 
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 
 class MySQL:
@@ -27,8 +27,8 @@ class MySQL:
     host: str = '127.0.0.1'
     port: int = 3306
 
-    user: str = ''
-    password: str = ''
+    user: Type[str] = 'baojie'
+    password: Type[str] = '123456'
 
     @classmethod
     def __URL__(
@@ -94,7 +94,6 @@ class DuckDB:
     """
     path: str = 'e:/programdata/DuckDB'
     database: str = 'Local'
-
     @classmethod
     def __env_init__(cls, *args: Any, **kwargs: Any) -> None:
         pass

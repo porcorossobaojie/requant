@@ -29,7 +29,7 @@ class DB():
     def write(
         self, 
         if_exists: Literal['fail', 'replace', 'append'] = 'append', 
-        index: bool = True, 
+        index: bool = False, 
         log: bool = True, 
         **kwargs: Any
     ):

@@ -85,7 +85,7 @@ class DuckDB:
 
     UNDIFINED: str = 'VARCHAR'
 
-    MPS: List[str] = [REAL, DECIMAL]
+    MPS: List[str] = [DECIMAL]
 
 
 class main:
@@ -165,6 +165,6 @@ class main:
 
         translated_type = getattr(class_obj, base_type, class_obj.UNDIFINED)
 
-        if len(parts) > 1 and translated_type in class_obj.MPS:
+        if len(parts) > 1 and (translated_type in class_obj.MPS):
             return f"{translated_type}({parts[1]}"
         return translated_type
