@@ -10,11 +10,7 @@ import numpy as np
 import pandas as pd
 from typing import Union, List, Any, Optional
 
-
-def fillna(
-    df_obj: pd.DataFrame, 
-    fill_list: List[Any]
-) -> pd.DataFrame:
+def fillna(df_obj: pd.DataFrame, fill_list: List[Any]) -> pd.DataFrame:
     df_obj = df_obj.sort_index()
     old_idx = df_obj.index.to_list()
     index = sorted(fill_list)
