@@ -53,6 +53,8 @@ class main(type('MainClassBase', (), DATA_SOURCE_DICT)):
 
         ---------------------------------------------------------------------------
         """
+
+        self.source = kwargs.pop('source', self.source)
         getattr(self, self.source).__init__(**kwargs)
         
     def __call__(self, **kwargs) -> None:
@@ -397,6 +399,6 @@ class main(type('MainClassBase', (), DATA_SOURCE_DICT)):
 
         ---------------------------------------------------------------------------
         """
-        login_info_str = str(self.login_info)[1:-1].replace("'", '')
+        login_info_str = str({i:j for i,j in self.login_info.items() if i in ['path', 'file', 'database', 'schema','table', 'columns', 'user', 'password']})[1:-1].replace("'", '')
         sorted_info = ', \n'.join(sorted(login_info_str.split(', ')))
         return f'DB source: {self.source}, \n{sorted_info}'

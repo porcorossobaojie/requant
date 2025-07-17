@@ -149,17 +149,13 @@ class main(meta):
         if not self.table_exist():
             self.create_table()
 
-        id_key = self.__find_max_of_exist_table__(self.ann_dt)
-        days = self._trade_days.copy()
-        days = days[days > id_key]
-
-        for i in days:
-            if jq.get_query_count()['spare'] <= 5000000:
-                break
-            df = self.pipeline(date=f'{i.date()}')
-            print(i)
+        id_key = self.__find_max_of_exist_table__(self.id_key)
+        df = self.pipeline(id_key=id_key)
+        self.write(df, log=True)
+        while len(df):
+            id_key = df[self.id_key].max()
+            df = self.pipeline(id_key=id_key)
             self.write(df, log=True)
-
 
 '''
 test:

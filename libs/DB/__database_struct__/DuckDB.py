@@ -189,7 +189,7 @@ class main(meta, config):
         command = 'select * from information_schema.{table}'.format(
             **parameters
         )
-        df = self.__command__(command, **parameters)
+        df = self.__command__(command, read_only=True, **parameters)
         return df
 
     def __table_exist__(
