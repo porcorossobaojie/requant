@@ -195,6 +195,7 @@ class main(meta):
 
 '''
 test:
+config = config()
 
 self = main(**config.asharelisting)
 self.daily()

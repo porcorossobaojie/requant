@@ -6,6 +6,7 @@ Created on Tue Jul 15 08:36:25 2025
 
 """
 import pandas as pd
+from local.login_info import SOURCE
 
 class DATABASE:
     """
@@ -23,7 +24,7 @@ class DATABASE:
 
     ---------------------------------------------------------------------------
     """
-    source: str = 'DuckDB'
+    source: str = SOURCE
     trade_dt: str = 'TRADE_DT'
     ann_dt: str = 'ANN_DT'
     code: str = 'S_INFO_WINDCODE'

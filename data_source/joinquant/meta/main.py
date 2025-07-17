@@ -36,9 +36,6 @@ class main(__DB_CLASS__, META_DATABASE):
 
     ---------------------------------------------------------------------------
     """
-    _stock: List[str] = jq.get_all_securities('stock', date=None).index.tolist()
-    _trade_days: pd.DatetimeIndex =  pd.to_datetime(jq.get_trade_days('2005-01-01')) + DATABASE.time_bias
-    _trade_days = _trade_days[_trade_days <= pd.Timestamp.today() - pd.Timedelta(5, 'h')]
 
     source = META_DATABASE.source
 
@@ -79,6 +76,10 @@ class main(__DB_CLASS__, META_DATABASE):
             )
         super().__init__(**parameters)
         self.__env_init__()
+        self._stock = jq.get_all_securities('stock', date=None).index.tolist()
+        trade_days = pd.to_datetime(jq.get_trade_days('2005-01-01')) + DATABASE.time_bias
+        self._trade_days = trade_days[trade_days <= pd.Timestamp.today() - pd.Timedelta(5, 'h')]
+
 
     @property
     def columns(self) -> Dict:

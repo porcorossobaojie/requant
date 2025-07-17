@@ -6,6 +6,7 @@ Created on Sun Jul 13 09:37:50 2025
 """
 
 from typing import Any, Dict, Type
+from local.login_info import DB_LOGIN_INFO
 
 
 class MySQL:
@@ -27,8 +28,8 @@ class MySQL:
     host: str = '127.0.0.1'
     port: int = 3306
 
-    user: Type[str] = 'baojie'
-    password: Type[str] = '123456'
+    user: Type[str] = DB_LOGIN_INFO.MySQL.user
+    password: Type[str] = DB_LOGIN_INFO.MySQL.password
 
     @classmethod
     def __URL__(

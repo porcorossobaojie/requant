@@ -10,9 +10,8 @@ from typing import Any, Callable, Dict, List, Type
 
 from libs.DB.__database_struct__.DuckDB import main as DuckDB
 from libs.DB.__database_struct__.MySQL import main as MySQL
-from libs.DB.config import DB_RECOMMAND_SOURCE
 from libs.utils.functions import flatten_list
-
+from local.login_info import SOURCE
 
 DATA_SOURCE_DICT: Dict[str, Any] = {
     'DuckDB': DuckDB(),
@@ -39,7 +38,7 @@ class main(type('MainClassBase', (), DATA_SOURCE_DICT)):
 
     ---------------------------------------------------------------------------
     """
-    source: str = DB_RECOMMAND_SOURCE
+    source: str = SOURCE
 
     def __init__(self, **kwargs) -> None:
         """

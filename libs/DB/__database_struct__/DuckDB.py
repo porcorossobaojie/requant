@@ -186,10 +186,7 @@ class main(meta, config):
             'columns': '*'
         }
         parameters = self.__parameters__(info_params, kwargs)
-        command = 'select * from information_schema.{table}'.format(
-            **parameters
-        )
-        df = self.__command__(command, read_only=True, **parameters)
+        df = self.__read__(**parameters)
         return df
 
     def __table_exist__(
