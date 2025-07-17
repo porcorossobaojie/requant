@@ -5,10 +5,10 @@ Created on Thu Jul 17 11:48:32 2025
 @author: Porco Rosso
 
 """
-
 import numpy as np
 import pandas as pd
-from typing import Union, List, Any, Optional
+from typing import Union, List, Any
+
 
 def fillna(df_obj: pd.DataFrame, fill_list: List[Any]) -> pd.DataFrame:
     df_obj = df_obj.sort_index()
@@ -29,8 +29,10 @@ def fillna(df_obj: pd.DataFrame, fill_list: List[Any]) -> pd.DataFrame:
         lst = pd.DataFrame(lst, columns=df_obj.columns, index=new_idx[position[0]:]).reindex(index)
     else:
         lst = pd.DataFrame(np.nan, index=index, columns=df_obj.columns)
-    lst.index.name = getattr(fill_list, 'name', None) if getattr(fill_list, 'name', None) is not None else df_obj.index.name
-    return lst   
+
+    lst.index.name = getattr(fill_list, 'name', df_obj.index.name)
+    return lst
+
 
 def shift(df_obj: pd.DataFrame, n: int) -> pd.DataFrame:
     bools = df_obj.iloc[-1].isnull()
@@ -38,22 +40,19 @@ def shift(df_obj: pd.DataFrame, n: int) -> pd.DataFrame:
         n -= 1
         df_obj.loc[:, bools] = df_obj.loc[:, bools].shift()
         bools = df_obj.iloc[-1].isnull()
+        
     return df_obj
 
+
 def log(
-    df_obj: pd.DataFrame, 
-    bias_adj: Union[int, float] = 1, 
+    df_obj: pd.DataFrame,
+    bias_adj: Union[int, float] = 1,
     abs_adj: bool = True
 ) -> pd.DataFrame:
-
     if abs_adj:
         sign = np.sign(df_obj)
         x = sign * np.log((df_obj + sign * bias_adj).abs())
     else:
-        x = np.log(bias_adj + df_obj)        
+        x = np.log(bias_adj + df_obj)
+        
     return x
-
-
-
-
-

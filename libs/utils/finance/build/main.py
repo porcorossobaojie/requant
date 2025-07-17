@@ -9,7 +9,7 @@ Created on Thu Jul 17 11:29:51 2025
 import numpy as np
 import pandas as pd
 from typing import Optional, Dict, Any, List, Union
-
+from libs.utils.finance.tools.main import fillna as fillna_func
 def group(
     df: pd.DataFrame, 
     rule: Union[Dict, List], 
@@ -41,7 +41,7 @@ def group(
         df = df.unstack(list(range(df.index.nlevels)[-1 * col_nlevels:]))
     return df
 
-def _weight(
+def weight(
     df: pd.DataFrame, 
     w_df: Optional[pd.DataFrame] = None, 
     fillna: bool = True, 
@@ -53,7 +53,7 @@ def _weight(
     axis = 0 if axis is None else axis
     if w_df is not None:
         if fillna == True:
-            w_df = _fillna(w_df, df.index) if axis == 1  else _fillna(w_df, df.columns, axis=1)
+            w_df = fillna_func(w_df, df.index) if axis == 1  else fillna_func(w_df, df.columns, axis=1)
         w_df = w_df.reindex_like(df)
         w_df[df.isnull()] = pd.NA
         if pct == True:
@@ -65,3 +65,79 @@ def _weight(
         else:
             x = df
         return x    
+    
+def portfolio(
+    df_obj: pd.DataFrame, 
+    returns: pd.DataFrame, 
+    weight: Optional[pd.DataFrame] = None, 
+    shift: int = 1, 
+    roll: int = 1, 
+    fillna: bool = False
+) -> pd.DataFrame:
+    returns = returns.rolling(roll).mean().shift((roll - 1 + shift) * -1)
+    df_obj = (fillna_func(df_obj, returns.index) if fillna else df_obj)
+    if df_obj.columns.nlevels == 1:
+        df_obj.columns = pd.MultiIndex.from_product(
+            [['__factor__'], df_obj.columns], 
+            names=('VALUE', df_obj.columns.name)
+        )
+    
+    if weight is not None:
+        weight = (fillna_func(weight, returns.index) if fillna else weight).reindex_like(returns)
+        weight = weight[returns.notnull()]
+        df = pd.concat({'__returns__':returns, '__weight__':weight}, axis=1)
+    else:
+        df = pd.concat({'__returns__':returns}, axis=1)
+        
+    df = pd.concat([df, df_obj], axis=1).stack()
+    df.index.names = [i if i is not None else 'level_i' + str(j) for j,i in enumerate(df.index.names)]
+    group_keys = [df.index.names[0]] + list(df_obj.columns.get_level_values(0).unique())
+    df.index = df.index.droplevel(-1)
+    df = df.set_index(group_keys[1:], append=True)
+    df = df.sort_index()
+    
+    if weight is not None:
+        df['__returns__'] = df['__returns__'] * df['__weight__']
+        obj = df.groupby(group_keys)
+        obj = obj['__returns__'].sum(min_count=1) / obj['__weight__'].sum(min_count=1)
+    else:
+        obj = df.groupby(group_keys).mean()
+        
+    obj = obj.unstack(list(range(1, obj.index.nlevels)))
+    if len(obj.columns.get_level_values(0).unique()) == 1:
+        obj.columns = obj.columns.droplevel(0)
+        
+    obj = obj.astype('float64')
+    obj = obj.shift(shift)
+    return obj
+
+def cut(
+    df_obj: pd.DataFrame, 
+    left: Union[int, float], 
+    right: Union[int, float], 
+    rng_left: Union[int, float], 
+    rng_right: Union[int, float], 
+    pct: bool = True, 
+    ascending: bool = False
+) -> pd.DataFrame:
+    role = right - left
+    lst = []
+    rank = df_obj.rank(axis=1, pct=pct, ascending=ascending)
+    j = rank.iloc[0]
+    j = (j >= left) & (j <= right)
+    lst.append(j.values)
+    for i, j in rank.iloc[1:].iterrows():
+        hold = (j >= left - rng_left) & (j <= right + rng_right) & lst[-1]
+        lens = int(role * j.notnull().sum()) if pct else role
+        updates = lens - hold.sum()
+        if updates > 0:
+            j = j[(~hold) & (j >= left)].sort_values().head(updates)
+            hold[j.index] = True
+        elif updates < 0:
+            hold[~hold.index.isin(j[hold].sort_values().head(lens).index)] = False
+        lst.append(hold.values)
+    lst = pd.DataFrame(np.vstack(lst), index=df_obj.index, columns=df_obj.columns)
+    return lst    
+    
+    
+    
