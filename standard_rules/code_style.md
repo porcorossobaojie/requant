@@ -4,6 +4,7 @@ This document outlines the preferred coding style and principles for this projec
 
 ## 1. General Principles
 
+*   **File Header Preservation:** The initial file header, including creation date and author information, must be preserved during any modifications. This metadata is crucial for historical tracking and attribution.
 *   **Clarity and Readability:** Code should be easy to understand and follow. Prioritize clear, explicit code over clever or overly concise solutions.
 *   **Maintainability:** Code should be structured in a way that facilitates future modifications, debugging, and collaboration.
 *   **Modularity:** Components should be self-contained, have clear responsibilities, and minimize interdependencies.

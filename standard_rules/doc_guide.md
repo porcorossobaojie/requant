@@ -4,6 +4,8 @@ This document provides detailed guidelines for writing docstrings and inline com
 
 ## 2. Documentation and Comments
 
+*   **File Header Preservation:** The initial file header, including creation date and author information, must be preserved during any modifications. This metadata is crucial for historical tracking and attribution.
+
 ### 2.1 Docstrings (Function, Class, Method)
 
 Docstrings are crucial for explaining the purpose, arguments, and return values of code elements. They follow a specific bilingual (English and Chinese) format.
