@@ -11,13 +11,14 @@ import jqdatasdk as jq
 import numpy as np
 import pandas as pd
 
-from data_source.config import DATABASE as META_DATABASE
-from data_source.joinquant.config import DATABASE, FILTER
-from libs import __DB_CLASS__
+from local.login_info import SOURCE
+from data_source.joinquant.config import TABLE_INFO_AND_PUBLIC_KEYS, FILTER
+from libs import db
+from libs.DB import config
 from libs.utils.functions import filter_class_attrs, merge_dicts
 
 
-class main(__DB_CLASS__, META_DATABASE):
+class main(db.__DB_CLASS_DIC__[SOURCE], TABLE_INFO_AND_PUBLIC_KEYS, FILTER, getattr(config, SOURCE)):
     """
     ===========================================================================
 
@@ -36,8 +37,6 @@ class main(__DB_CLASS__, META_DATABASE):
 
     ---------------------------------------------------------------------------
     """
-
-    source = META_DATABASE.source
 
     def __init__(self, **kwargs: Any) -> None:
         """
@@ -71,16 +70,13 @@ class main(__DB_CLASS__, META_DATABASE):
 
         ---------------------------------------------------------------------------
         """
-        parameters = (
-            filter_class_attrs(DATABASE) | kwargs | filter_class_attrs(FILTER)
-            )
-        super().__init__(**parameters)
+        self.source = SOURCE
+        super().__init__(**kwargs)
         self.__env_init__()
         self._stock = jq.get_all_securities('stock', date=None).index.tolist()
-        trade_days = pd.to_datetime(jq.get_trade_days('2005-01-01')) + DATABASE.time_bias
+        trade_days = pd.to_datetime(jq.get_trade_days('2005-01-01')) + self.time_bias
         self._trade_days = trade_days[trade_days <= pd.Timestamp.today() - pd.Timedelta(5, 'h')]
-
-
+    
     @property
     def columns(self) -> Dict:
         """
@@ -458,7 +454,7 @@ class main(__DB_CLASS__, META_DATABASE):
         else:
             parameters = self.__parameters__(parameters, kwargs)
 
-        super().create_table(**parameters)
+        super().__create_table__(**parameters)
 
     def drop_table(self, **kwargs: Any) -> None:
         """
@@ -487,4 +483,36 @@ class main(__DB_CLASS__, META_DATABASE):
         ---------------------------------------------------------------------------
         """
         parameters = self.__parameters__({'log': True}, kwargs)
-        super().drop_table(**parameters)
+        super().__drop_table__(**parameters)
+        
+    def table_exist(self):
+        return super().__table_exist__()
+        
+        
+'''        
+from local.login_info import JQ_LOGIN_INFO
+import jqdatasdk as jq
+jq.auth (**JQ_LOGIN_INFO)
+    
+from data_source.joinquant.config import ANN_DT_TABLES as config
+config = config()
+self = main(**config.asharebalancesheet)
+self.daily()
+        
+ '''       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

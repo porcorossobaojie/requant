@@ -11,11 +11,9 @@ from typing import Any, Dict, List, Tuple, Union
 import jqdatasdk as jq
 import pandas as pd
 
-from data_source.config import DATABASE as BASE_DATABASE_CONFIG
-from local.login_info import DB_LOGIN_INFO, SOURCE
+from data_source.config import PUBLIC_KEYS
 
-
-class DATABASE(BASE_DATABASE_CONFIG):
+class TABLE_INFO_AND_PUBLIC_KEYS(PUBLIC_KEYS):
     """
     ===========================================================================
 
@@ -34,7 +32,6 @@ class DATABASE(BASE_DATABASE_CONFIG):
 
     ---------------------------------------------------------------------------
     """
-    schema: str = getattr(DB_LOGIN_INFO, SOURCE).schema
     partition: pd.DatetimeIndex = pd.date_range(
         '2005-01-01', '2030-12-31', freq='YE'
         )

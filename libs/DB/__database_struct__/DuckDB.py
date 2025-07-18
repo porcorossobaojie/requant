@@ -12,13 +12,11 @@ import pandas as pd
 
 from libs.DB.__data_type__.main import main as data_trans
 from libs.DB.__database_struct__.meta import main as meta
-from libs.DB.config import DuckDB as config
-from libs.utils.functions import filter_class_attrs
 
 
-class main(meta, config):
+class main(meta):
     __data_trans__ = data_trans('DuckDB')
-    __internal_attrs__ = list(filter_class_attrs(config).keys())
+    __internal_attrs__ = []
 
     def __init__(self, **kwargs: Any) -> None:
         self.__internal_attrs__ = list(

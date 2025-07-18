@@ -9,7 +9,7 @@ from typing import Any, Dict, Type
 from local.login_info import DB_LOGIN_INFO
 
 
-class MySQL:
+class MySQL(DB_LOGIN_INFO.MySQL):
     """
     ===========================================================================
 
@@ -27,9 +27,7 @@ class MySQL:
     chunksize: int = 64000000
     host: str = '127.0.0.1'
     port: int = 3306
-
-    user: Type[str] = DB_LOGIN_INFO.MySQL.user
-    password: Type[str] = DB_LOGIN_INFO.MySQL.password
+    schema = 'jq_data'
 
     @classmethod
     def __URL__(
@@ -76,12 +74,10 @@ class MySQL:
             "{mysql_connect}{user}:{password}@{host}:{port}/{schema}?charset={charset}"
         ).format(schema=schema, **kwargs)
 
-    @classmethod
-    def __env_init__(cls, *args: Any, **kwargs: Any) -> None:
-        pass
 
 
-class DuckDB:
+
+class DuckDB(DB_LOGIN_INFO.DuckDB):
     """
     ===========================================================================
 
@@ -95,9 +91,6 @@ class DuckDB:
     """
     path: str = 'e:/programdata/DuckDB'
     database: str = 'Local'
-    @classmethod
-    def __env_init__(cls, *args: Any, **kwargs: Any) -> None:
-        pass
+    schema = 'jq_data'
 
 
-DB_RECOMMAND_SOURCE: str = 'DuckDB'

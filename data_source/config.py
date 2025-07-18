@@ -6,9 +6,8 @@ Created on Tue Jul 15 08:36:25 2025
 
 """
 import pandas as pd
-from local.login_info import SOURCE
 
-class DATABASE:
+class PUBLIC_KEYS:
     """
     ===========================================================================
 
@@ -24,27 +23,8 @@ class DATABASE:
 
     ---------------------------------------------------------------------------
     """
-    source: str = SOURCE
     trade_dt: str = 'TRADE_DT'
     ann_dt: str = 'ANN_DT'
     code: str = 'S_INFO_WINDCODE'
     report_period: str = 'REPORT_PERIOD'
     time_bias = pd.Timedelta(15, 'h')
-
-class FILTER:
-    """
-    ===========================================================================
-
-    Configuration for data filtering.
-
-    Specifies the start date for historical data retrieval.
-
-    ---------------------------------------------------------------------------
-
-    数据筛选配置。
-
-    指定历史数据检索的开始日期。
-
-    ---------------------------------------------------------------------------
-    """
-    trade_start: str = '2010-01-01'

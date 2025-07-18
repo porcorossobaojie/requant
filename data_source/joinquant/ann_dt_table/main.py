@@ -7,10 +7,8 @@ Created on Tue Jul 15 20:23:04 2025
 """
 from typing import Any, Literal
 
-import jqdatasdk as jq
 import pandas as pd
 
-from data_source.joinquant.config import ANN_DT_TABLES as config
 from data_source.joinquant.meta.main import main as meta
 
 
@@ -151,15 +149,36 @@ class main(meta):
 
         id_key = self.__find_max_of_exist_table__(self.id_key)
         df = self.pipeline(id_key=id_key)
-        self.write(df, log=True)
+        self.__write__(df, log=True)
         while len(df):
             id_key = df[self.id_key].max()
             df = self.pipeline(id_key=id_key)
-            self.write(df, log=True)
+            self.__write__(df, log=True)
 
 '''
 test:
-
+    
+    
+from local.login_info import JQ_LOGIN_INFO
+import jqdatasdk as jq
+jq.auth (**JQ_LOGIN_INFO)
+    
+from data_source.joinquant.config import ANN_DT_TABLES as config
+config = config()
 self = main(**config.asharebalancesheet)
 self.daily()
 '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+

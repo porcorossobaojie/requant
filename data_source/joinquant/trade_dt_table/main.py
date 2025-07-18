@@ -190,7 +190,7 @@ class main(meta):
                 break
             df = self.pipeline(date=f'{i.date()}')
             print(i)
-            self.write(df, log=True)
+            self.__write__(df, log=True)
 
 
 '''

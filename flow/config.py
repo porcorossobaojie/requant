@@ -1,12 +1,12 @@
 # config file
 
-from data_source.joinquant.config import DATABASE as __DATABASE__
+from data_source.joinquant.config import TABLE_INFO_AND_PUBLIC_KEYS
 
-class DATABASE(__DATABASE__):
-    drop_columns = ['UNIQUE_KEY', 'ID_KEY']
+class COLUMNS_INFO(TABLE_INFO_AND_PUBLIC_KEYS):
+    drop_columns = [TABLE_INFO_AND_PUBLIC_KEYS.primary_key, TABLE_INFO_AND_PUBLIC_KEYS.id_key]
     
 class FILTER:
-    ann_dt_start = '2011-12-31 15:00'
+    ann_start = '2011-12-31 15:00'
     trade_start = '2014-01-01 15:00'
     
 class DB_INFO:

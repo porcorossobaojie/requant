@@ -50,6 +50,26 @@ def __filter_class_attrs__(class_object: Type[Any]) -> Dict[str, Any]:
     }
     return dic
 
+def __filter_all_parents_class_attrs__(class_object: Type[Any]) -> Dict[str, Any]:
+    def check_double_underscore(s: str) -> bool:
+        return s.startswith('__') and s.endswith('__') and len(s) > 4
+    all_attrs = {}
+    for cls in reversed(class_object.__mro__): # 反向遍历 MRO，先处理基类
+        # 忽略 object 类，因为它包含大量不相关的内置属性
+        if cls is object:
+            continue
+
+        # 获取当前类 (cls) 的直接属性
+        current_cls_attrs = {}
+        for name, value in cls.__dict__.items():
+            if not check_double_underscore(name):
+                current_cls_attrs[name] = value
+
+        # 将当前类的属性合并到最终字典中
+        # 由于我们是反向遍历 MRO，先加入基类的属性，然后子类的同名属性会覆盖它们
+        all_attrs.update(current_cls_attrs)
+
+    return all_attrs
 
 def __merge_dicts__(*dicts: Dict[str, Any],) -> Dict[str, Any]:
     """
