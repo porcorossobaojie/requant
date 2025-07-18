@@ -8,21 +8,7 @@ Created on Tue Jul 15 08:36:25 2025
 import pandas as pd
 
 class PUBLIC_KEYS:
-    """
-    ===========================================================================
-
-    Configuration settings for the database connection and table structure.
-
-    This class defines standard column names and the data source type.
-
-    ---------------------------------------------------------------------------
-
-    数据库连接和表结构的配置设置。
-
-    该类定义了标准的列名和数据源类型。
-
-    ---------------------------------------------------------------------------
-    """
+    
     trade_dt: str = 'TRADE_DT'
     ann_dt: str = 'ANN_DT'
     code: str = 'S_INFO_WINDCODE'

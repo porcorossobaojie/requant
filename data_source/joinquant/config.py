@@ -14,24 +14,7 @@ import pandas as pd
 from data_source.config import PUBLIC_KEYS
 
 class TABLE_INFO_AND_PUBLIC_KEYS(PUBLIC_KEYS):
-    """
-    ===========================================================================
-
-    Configuration specific to the JoinQuant data source.
-
-    This class extends the base database configuration with details needed
-    for interacting with JoinQuant data, such as schema, partitioning, and
-    column name mappings.
-
-    ---------------------------------------------------------------------------
-
-    针对聚宽数据源的特定配置。
-
-    该类扩展了基础数据库配置，增加了与聚宽数据交互所需的详细信息，
-    例如 schema、分区和列名映射。
-
-    ---------------------------------------------------------------------------
-    """
+    
     partition: pd.DatetimeIndex = pd.date_range(
         '2005-01-01', '2030-12-31', freq='YE'
         )
@@ -50,47 +33,10 @@ class TABLE_INFO_AND_PUBLIC_KEYS(PUBLIC_KEYS):
 
 
 class FILTER:
-    """
-    ===========================================================================
-
-    JoinQuant specific data filtering configuration.
-
-    Defines the start timestamp for fetching trade data.
-
-    ---------------------------------------------------------------------------
-
-    聚宽特定的数据筛选配置。
-
-    定义了获取交易数据的起始时间戳。
-
-    ---------------------------------------------------------------------------
-    """
+    
     trade_start = pd.to_datetime('2010-01-01 15:00')
 
-# beacuse of using "jq.finance.STK_CASHFLOW_STATEMENT" as attributes in a class,
-# you must login jqsdk first. So using instance instead of class here to invoid
-# login if not need, special when there is not network.
 class ANN_DT_TABLES:
-    """
-    ===========================================================================
-
-    Configuration for tables indexed by Announcement Date (ANN_DT).
-
-    This class holds dictionaries defining properties for various financial
-    tables like balance sheets, cash flows, and income statements. Each
-    dictionary contains the table name, column information, and the specific
-    JoinQuant API command to fetch the data.
-
-    ---------------------------------------------------------------------------
-
-    按公告日期（ANN_DT）索引的表的配置。
-
-    该类包含多个字典，定义了各种财务数据表的属性，如资产负债表、
-    现金流量表和利润表。每个字典包含表名、列信息以及用于获取数据的
-    特定聚宽 API 命令。
-
-    ---------------------------------------------------------------------------
-    """
     def __init__(self):
         self.asharebalancesheet: Dict[str, Union[str, Any]] = {
             'table': 'asharebalancesheet',
@@ -172,26 +118,7 @@ class ANN_DT_TABLES:
 
 
 class TRADE_DT_TABLES:
-    """
-    ===========================================================================
-
-    Configuration for tables indexed by Trade Date (TRADE_DT).
-
-    This class holds dictionaries defining properties for various market data
-    tables like daily prices, derivative indicators, and index weights. Each
-    dictionary contains the table name, column information, and the specific
-    JoinQuant API command or logic to fetch the data.
-
-    ---------------------------------------------------------------------------
-
-    按交易日期（TRADE_DT）索引的表的配置。
-
-    该类包含多个字典，定义了各种市场数据表的属性，如每日价格、
-    衍生指标和指数权重。每个字典包含表名、列信息以及用于获取数据的
-    特定聚宽 API 命令或逻辑。
-
-    ---------------------------------------------------------------------------
-    """
+    
     def __init__(self):
         self.ashareeodprices: Dict[str, Union[str, Dict[str, List[Union[str, int]]], Any]] = {
             'table': 'ashareeodprices',
