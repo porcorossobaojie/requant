@@ -10,17 +10,6 @@ from local.login_info import DB_LOGIN_INFO
 
 
 class MySQL(DB_LOGIN_INFO.MySQL):
-    """
-    ===========================================================================
-
-    Configuration class for MySQL database connections.
-
-    ---------------------------------------------------------------------------
-
-    用于MySQL数据库连接的配置类。
-
-    ---------------------------------------------------------------------------
-    """
     mysql_connect: str = 'mysql+pymysql://'
     charset: str = 'utf8mb4'
     collate: str = 'utf8mb4_general_ci'
@@ -35,41 +24,6 @@ class MySQL(DB_LOGIN_INFO.MySQL):
         schema: str,
         **kwargs: Dict[str, Any]
     ) -> str:
-        """
-        ===========================================================================
-
-        Constructs the database connection URL.
-
-        Parameters
-        ----------
-        schema : str
-            The database schema name.
-        **kwargs : Dict[str, Any]
-            Connection parameters.
-
-        Returns
-        -------
-        str
-            The full connection URL string.
-
-        ---------------------------------------------------------------------------
-
-        构建数据库连接URL。
-
-        参数
-        ----------
-        schema : str
-            数据库模式名称。
-        **kwargs : Dict[str, Any]
-            连接参数。
-
-        返回
-        -------
-        str
-            完整的连接URL字符串。
-
-        ---------------------------------------------------------------------------
-        """
         return (
             "{mysql_connect}{user}:{password}@{host}:{port}/{schema}?charset={charset}"
         ).format(schema=schema, **kwargs)
@@ -78,19 +32,6 @@ class MySQL(DB_LOGIN_INFO.MySQL):
 
 
 class DuckDB(DB_LOGIN_INFO.DuckDB):
-    """
-    ===========================================================================
-
-    Configuration class for DuckDB connections.
-
-    ---------------------------------------------------------------------------
-
-    用于DuckDB连接的配置类。
-
-    ---------------------------------------------------------------------------
-    """
     path: str = 'e:/programdata/DuckDB'
     database: str = 'Local'
     schema = 'jq_data'
-
-
