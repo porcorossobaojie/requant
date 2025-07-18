@@ -48,7 +48,6 @@ Consistent code formatting improves readability and reduces cognitive load.
 ### 3.2 Blank Lines
 
 *   **Two blank lines** between top-level function or class definitions. This aligns with PEP 8.
-*   **Two blank lines** between method definitions within a class. This is a project-specific convention, differing from PEP 8's recommendation of one blank line for methods.
 *   One blank line around logical sections within functions/methods for readability. This aligns with PEP 8.
 
 ### 3.3 Imports
@@ -64,6 +63,7 @@ Consistent code formatting improves readability and reduces cognitive load.
 ### 3.4 Line Length
 
 *   While not strictly enforced to 79 characters (as per PEP 8), strive for readability. Break long lines where appropriate to enhance clarity. Docstring separators (`===================`) are an explicit exception and may exceed this limit. The goal is to keep lines manageable and easy to read without excessive horizontal scrolling.
+*   **Function Variable Line Breaks:** When a function has more than 3 variables (excluding `self`, `cls`, and other system default variables), consider breaking lines based on the actual length of the function definition line. For 4 or more variables, line breaks should generally be applied unless the function definition line is exceptionally short.
 
 ### 3.5 Whitespace in Expressions and Statements
 
@@ -81,6 +81,7 @@ Consistent and clear type hinting is essential for code clarity, maintainability
 *   **Consistent Use:** All function arguments, return values, and significant variables should have type hints. This is a strong project requirement.
 *   **Clarity:** Use specific types where possible (e.g., `List[str]` instead of `list`, `Dict[str, Any]` instead of `dict`).
 *   **`Any` Usage:** Use `Any` sparingly, typically for highly generic functions, when dealing with external libraries that lack precise type information, or when type complexity outweighs the benefit. When `Any` is used, consider adding a comment explaining why.
+*   **Inferred Types:** For function variables and outputs, infer types based on context and meaning.
 
 ## 5. Object-Oriented Programming (OOP)
 
@@ -335,7 +336,6 @@ def standalone_function(input_list: List[int]) -> List[int]:
 ### 3.2 空行
 
 *   顶级函数或类定义之间有**两个空行**。这与 PEP 8 一致。
-*   类中方法定义之间有**两个空行**。这是一个项目特定约定，与 PEP 8 建议的方法之间一个空行不同。
 *   函数/方法内部的逻辑部分周围有一个空行，以提高可读性。这与 PEP 8 一致。
 
 ### 3.3 导入
@@ -351,6 +351,7 @@ def standalone_function(input_list: List[int]) -> List[int]:
 ### 3.4 行长度
 
 *   虽然不严格限制为 79 个字符（根据 PEP 8），但力求可读性。在适当的地方断开长行以增强清晰度。文档字符串分隔符（`===================`）是一个明确的例外，可能会超出此限制。目标是使行易于管理和阅读，而无需过多的水平滚动。
+*   **函数变量断行：** 当函数变量超过 3 个（不包括 `self`、`cls` 等系统默认变量）时，根据函数命名行的实际长度考虑是否需要断行。对于 4 个或更多变量的情况，除非函数命名行特别短，一般都应考虑断行。
 
 ### 3.5 表达式和语句中的空格
 
@@ -368,6 +369,7 @@ def standalone_function(input_list: List[int]) -> List[int]:
 *   **一致使用：** 所有函数参数、返回值和重要变量都应具有类型提示。这是一个强烈的项目要求。
 *   **清晰性：** 尽可能使用特定类型（例如，`List[str]` 而不是 `list`，`Dict[str, Any]` 而不是 `dict`）。
 *   **`Any` 的使用：** 谨慎使用 `Any`，通常用于高度通用的函数、处理缺乏精确类型信息的外部库，或者当类型复杂性超过收益时。使用 `Any` 时，考虑添加注释解释原因。
+*   **推断类型：** 对于函数变量和输出，根据上下文和含义推断类型。
 
 ## 5. 面向对象编程（OOP）
 

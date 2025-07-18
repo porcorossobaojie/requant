@@ -55,6 +55,29 @@ While I am designed to be self-driven, you can accelerate my work. Providing the
 *   **Specific Examples:** For highly nuanced formatting or refactoring, providing a direct `before` and `after` example is the quickest way to a perfect result.
 *   **Key Constraints:** If there are non-obvious constraints (e.g., a specific library version, a memory limit), stating them upfront will streamline my process.
 
+## 3. Tool Usage Notes
+
+### 3.1 Troubleshooting `replace` Tool Failures
+
+When using the `replace` tool, if you encounter a `Failed to edit, 0 occurrences found for old_string` error, please check the following points:
+
+**Problem Analysis:**
+
+1.  **`old_string` does not exactly match the file content:**
+    *   **Whitespace/Indentation Differences:** Even extra spaces, mixed tabs and spaces, or trailing whitespace can cause a mismatch.
+    *   **Hidden Characters:** Invisible characters (e.g., `\r` carriage returns) might exist in the file, breaking exact matches.
+    *   **Minor Content Discrepancies:** Small changes like typos, case mismatches, or missing punctuation can also lead to failed matches.
+
+**Solution:**
+
+1.  **Always use `read_file` to get the exact `old_string`:** Before executing `replace`, always use the `read_file` tool to read the relevant content from the target file and directly copy its output as the value for `old_string`. This ensures `old_string` contains all exact characters, whitespace, and indentation.
+2.  **Carefully verify `new_string`:** Ensure `new_string` is the complete, correct, and style-compliant text you intend to replace with.
+3.  **Be cautious with multi-line strings:** For multi-line text replacements, pay special attention to ensuring that the indentation and line endings (`\n` or `\r\n`) of each line exactly match the actual content in the file.
+
+## 4. Important Note: DuckDB Installation
+
+If you encounter `access violation` or other low-level errors when using `pip install duckdb` in a Windows environment, please try installing with `conda install duckdb`. Conda generally manages underlying dependencies and binaries better, especially on Windows.
+
 ---
 
 # Gemini 在 `quant` 项目中的行动纲领
@@ -93,7 +116,7 @@ While I am designed to be self-driven, you can accelerate my work. Providing the
 >
 > **我公布的计划：** “收到。我将创建一个新的动量因子。这是我的计划：
 > 1.  遵循 `code_standards_new.md`，创建样板文件 `factors/equity/momentum_001.py`。
-> 2.  实现计算6个月价格变化的核心逻辑，并确保使用 Pandas 完全向量化。
+> 2.  实现计算6个月价格变化的核心逻辑，确保它完全向量化使用 Pandas。
 > 3.  将这个新因子集成到 `factors/__factorize__/main.py` 流程中。
 > 4.  最后，我将为您提供对此特定因子运行回测所需的配置代码段。”
 
@@ -104,18 +127,35 @@ While I am designed to be self-driven, you can accelerate my work. Providing the
 *   **金融领域的边界情况：** 我将主动考虑并处理常见的金融数据问题（例如，由前瞻窗口产生的 `NaN` 值、市场假日、零方差数据）。
 
 ### 第五步：交付、解释与自我审查
-我将交付完成的解决方案。对于复杂的代码，我将提供关于方法的简洁解释。我提供的每一个解决方案都已根据以下标准进行了自我审查：正确性、效率、是否遵守项目标准，以及针对我所识别的金融边界情况的健壮性。
+我将交付完成的解决方案。对于复杂的代码，我将提供关于方法的简洁解释。我提供的每一个解决方案都已根据以下标准进行了自我审查：正确性、效率、是否遵守项目标准，以及针对所识别的金融边界情况的健壮性。
 
 ## 2. 您如何能加速我的流程
 
 虽然我被设计为自我驱动，但您总能加速我的工作。提供以下信息总是有帮助的，但绝不是必需的：
 
-*   **“为什么”：** 分享高层次的目标能帮助我更快地与您的战略目标对齐。
-*   **具体示例：** 对于非常细微的格式化或重构任务，提供一个直接的 `before` 和 `after` 示例是获得完美结果的最快方式。
-*   **关键约束：** 如果有非明显的约束（例如，特定的库版本，内存限制），预先声明它们将简化我的流程。
+*   **“为什么”：** 分享高层次的目标有助于我更快地与您的战略目标对齐。
+*   **具体示例：** 对于非常细微的格式化或重构任务，提供直接的 `before` 和 `after` 示例是获得完美结果的最快方式。
+*   **关键约束：** 如果存在非明显的约束（例如，特定的库版本，内存限制），预先声明它们将简化我的流程。
 
----
+## 3. 工具使用说明
 
-### **重要提示：DuckDB 安装**
+### 3.1 `replace` 工具故障排除
+
+在使用 `replace` 工具时，如果遇到 `Failed to edit, 0 occurrences found for old_string` 错误，请检查以下几点：
+
+**问题分析：**
+
+1.  **`old_string` 与文件内容不完全匹配：**
+    *   **空白符/缩进差异：** 即使是多余的空格、制表符与空格混用，或行尾空白符，都会导致不匹配。
+    *   **隐藏字符：** 文件中可能存在肉眼不可见的字符（例如，`\r` 回车符），它们会破坏精确匹配。
+    *   **内容微小差异：** 拼写错误、大小写不一致、标点符号缺失等细微改动也会导致匹配失败。
+
+**解决方案：**
+
+1.  **始终使用 `read_file` 获取精确的 `old_string`：** 在执行 `replace` 前，务必使用 `read_file` 工具读取目标文件的相关内容，并直接复制其输出作为 `old_string` 的值。这能确保 `old_string` 包含所有精确的字符、空白符和缩进。
+2.  **仔细核对 `new_string`：** 确保 `new_string` 是你期望替换后的完整、正确且符合代码规范的文本。
+3.  **警惕多行字符串：** 对于多行文本的替换，尤其要注意每行的缩进和换行符（`\n` 或 `\r\n`）是否与文件中实际情况完全一致。
+
+## 4. 重要提示：DuckDB 安装
 
 如果在 Windows 环境下使用 `pip install duckdb` 遇到 `access violation` 或其他底层错误，请尝试使用 `conda install duckdb` 进行安装。Conda 通常能更好地管理底层依赖和二进制文件，尤其是在 Windows 上。
