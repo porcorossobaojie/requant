@@ -141,27 +141,31 @@ class main(meta):
         ---------------------------------------------------------------------------
         """
         if self.table == 'asharelisting':  # this table inform the on list time for each stock, which will replace every day
-            if_exists = 'replace'
-
-        if if_exists == 'replace':
             self.drop_table()
-
-        if not self.table_exist():
             self.create_table()
-
-        id_key = self.__find_max_of_exist_table__(self.trade_dt)
-        if self.table == 'ashareconcept':  # this table inform the ’题材‘ and '概念' for which not have data at 2010, the earlest data appeared at 2015
-            id_key = max(pd.to_datetime('2015-01-01 15:00'), id_key)
-        days = self._trade_days.copy()
-        days = days[days > id_key]
-        if self.table == 'asharelisting' and len(days):
-            days = days[-1:]
-
-        for i in days:
-            if jq.get_query_count()['spare'] <= 5000000:
-                break
-            df = self.pipeline(date=f'{i.date()}')
-            print(i)
+            df = self.pipeline()
             self.__write__(df, log=True)
-
+        
+        else:
+            if if_exists == 'replace':
+                self.drop_table()
+    
+            if not self.table_exist():
+                self.create_table()
+    
+            id_key = self.__find_max_of_exist_table__(self.trade_dt)
+            if self.table == 'ashareconcept':  # this table inform the ’题材‘ and '概念' for which not have data at 2010, the earlest data appeared at 2015
+                id_key = max(pd.to_datetime('2015-01-01 15:00'), id_key)
+            days = self._trade_days.copy()
+            days = days[days > id_key]
+            if self.table == 'asharelisting' and len(days):
+                days = days[-1:]
+    
+            for i in days:
+                if jq.get_query_count()['spare'] <= 5000000:
+                    break
+                df = self.pipeline(date=f'{i.date()}')
+                print(i)
+                self.__write__(df, log=True)
+    
 

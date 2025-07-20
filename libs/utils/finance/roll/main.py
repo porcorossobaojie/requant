@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jul 17 12:56:19 2025
+Created on Sun Jan  2 15:32:52 2022
 
 @author: Porco Rosso
-
 """
 
 import numpy as np
@@ -12,66 +11,60 @@ from typing import Optional, Dict, Any, List, Union, Callable
 
 from libs.utils.finance.roll.base import ts_argsort_unit, ts_rank_unit, ts_sort_unit
 
-
-class _meta:
+class _meta():
     """
     ===========================================================================
 
-    Base class for rolling window operations.
-
-    Provides common functionalities for handling rolling windows on DataFrames,
-    including masking, min_periods handling, and applying time-series functions.
+    Base class for rolling window operations, providing common utilities.
 
     ---------------------------------------------------------------------------
 
-    滚动窗口操作的基类。
-
-    提供处理 DataFrame 滚动窗口的通用功能，包括掩码、最小周期处理和应用时间序列函数。
+    滚动窗口操作的基类，提供通用工具。
 
     ---------------------------------------------------------------------------
     """
     def __init__(
-        self,
-        df_obj: pd.DataFrame,
-        window: int,
-        min_periods: int,
-        ts_func: Callable,
+        self, 
+        df_obj: pd.DataFrame, 
+        window: int, 
+        min_periods: int, 
+        ts_func: Callable, 
         ascending: bool
     ):
         """
         ===========================================================================
 
-        Initializes the _meta class.
+        Initializes the _meta class with the DataFrame, window, and function details.
 
         Parameters
         ----------
         df_obj : pd.DataFrame
-            The input DataFrame.
+            The input DataFrame for rolling operations.
         window : int
             The size of the rolling window.
         min_periods : int
             Minimum number of observations in window required to have a value.
         ts_func : Callable
-            The time-series function to apply.
+            The time-series function to apply within the rolling window.
         ascending : bool
-            Whether to sort in ascending order.
+            Whether to sort in ascending order for certain operations.
 
         ---------------------------------------------------------------------------
 
-        初始化 _meta 类。
+        使用DataFrame、窗口和函数详细信息初始化_meta类。
 
         参数
         ----------
         df_obj : pd.DataFrame
-            输入 DataFrame。
+            用于滚动操作的输入DataFrame。
         window : int
             滚动窗口的大小。
         min_periods : int
-            窗口中需要有值的最小观察数。
+            窗口中需要有值的最小观测数。
         ts_func : Callable
-            要应用的时间序列函数。
+            在滚动窗口内应用的时间序列函数。
         ascending : bool
-            是否按升序排序。
+            是否按升序排序以进行某些操作。
 
         ---------------------------------------------------------------------------
         """
@@ -80,158 +73,133 @@ class _meta:
         self.min_periods = min_periods
         self._ts_func = ts_func
         self._ascending = ascending
-        self._count = self.window  # Default value for count
-
-
+        
     def __call__(
-        self,
+        self, 
         count: Optional[int] = None
     ) -> Any:
         """
         ===========================================================================
 
-        Allows setting the 'count' parameter for the rolling operation.
+        Allows setting the 'count' attribute, typically for specific rolling operations.
 
         Parameters
         ----------
         count : Optional[int], optional
-            The count value to set, by default None.
-
-        ---------------------------------------------------------------------------
-
-        允许为滚动操作设置“count”参数。
-
-        参数
-        ----------
-        count : Optional[int], optional
-            要设置的计数，默认为 None。
-
-        ---------------------------------------------------------------------------
+            The count value to set. Defaults to None.
 
         Returns
         -------
         Any
-            Returns self for chaining.
+            Returns self, allowing for method chaining.
 
         ---------------------------------------------------------------------------
+
+        允许设置“count”属性，通常用于特定的滚动操作。
+
+        参数
+        ----------
+        count : Optional[int], optional
+            要设置的计数。默认为 None。
 
         返回
         -------
         Any
-            返回自身以进行链式调用。
+            返回自身，允许方法链式调用。
 
         ---------------------------------------------------------------------------
         """
         if count is not None:
             self._count = count
         return self
-
-
-    @property
+    
+    @property    
     def count(self) -> int:
         """
         ===========================================================================
 
-        Returns the current count value.
-
-        ---------------------------------------------------------------------------
-
-        返回当前计数。
-
-        ---------------------------------------------------------------------------
+        Returns the effective count for rolling operations.
 
         Returns
         -------
         int
-            The count value.
+            The count value, defaulting to the window size if not explicitly set.
 
         ---------------------------------------------------------------------------
+
+        返回滚动操作的有效计数。
 
         返回
         -------
         int
-            计数。
+            计数，如果未明确设置，则默认为窗口大小。
 
         ---------------------------------------------------------------------------
         """
         x = getattr(self, '_count', self.window)
         return x
-
+    
     @property
     def _masked_obj(self) -> np.ma.MaskedArray:
         """
         ===========================================================================
 
-        Returns a masked NumPy array of the input DataFrame.
-
-        NaN values in the DataFrame are masked.
-
-        ---------------------------------------------------------------------------
-
-        返回输入 DataFrame 的掩码 NumPy 数组。
-
-        DataFrame 中的 NaN 值被掩码。
-
-        ---------------------------------------------------------------------------
+        Returns a masked NumPy array of the DataFrame's values, masking NaNs.
 
         Returns
         -------
         np.ma.MaskedArray
-            The masked array.
+            A masked array where NaN values are masked.
 
         ---------------------------------------------------------------------------
+
+        返回DataFrame值的掩码NumPy数组，掩盖NaN。
 
         返回
         -------
         np.ma.MaskedArray
-            掩码数组。
+            一个掩码数组，其中NaN值被掩盖。
 
-    ---------------------------------------------------------------------------
+        ---------------------------------------------------------------------------
         """
         if not hasattr(self, '_masked_obj_'):
             obj = self._obj.values
             self._masked_obj_ = np.ma.array(obj, mask=np.isnan(obj))
         return self._masked_obj_
-
-
+    
     @property
     def _min_periods_mask(self) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Returns a DataFrame indicating where min_periods condition is met.
-
-        ---------------------------------------------------------------------------
-
-        返回一个 DataFrame，指示满足 min_periods 条件的位置。
-
-        ---------------------------------------------------------------------------
+        Generates a mask indicating where the minimum number of periods is met.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with boolean mask.
+            A DataFrame indicating for each position if the minimum periods condition is met.
 
         ---------------------------------------------------------------------------
+
+        生成一个掩码，指示满足最小周期数的位置。
 
         返回
         -------
         pd.DataFrame
-            带有布尔掩码的 DataFrame。
+            一个DataFrame，指示每个位置是否满足最小周期条件。
 
         ---------------------------------------------------------------------------
         """
-        if not hasattr(self, '_min_periods_mask_'):
+        if not hasattr(self, '_min_periods_mask_'):   
             obj = self._obj.notnull().rolling(self.window, min_periods=self.window).sum()
             self._min_periods_mask_ = obj
         return self._min_periods_mask_
-
-
+    
     def _rolling_obj(
-        self,
-        array_obj: np.ndarray,
-        pct: Optional[bool],
-        group_func: Optional[Callable],
+        self, 
+        array_obj: np.ndarray, 
+        pct: Optional[bool], 
+        group_func: Optional[Callable], 
         **kwargs: Any
     ) -> pd.DataFrame:
         """
@@ -239,53 +207,41 @@ class _meta:
 
         Performs the core rolling window calculation.
 
-        Applies the time-series function (`_ts_func`) to each rolling window.
+        Parameters
+        ----------
+        array_obj : np.ndarray
+            The NumPy array to apply the rolling window to.
+        pct : Optional[bool]
+            Whether to return results as percentages. Defaults to None.
+        group_func : Optional[Callable]
+            The aggregation function to apply within each window. Defaults to None.
+        **kwargs : Any
+            Additional keyword arguments passed to the `ts_func`.
+
+        Returns
+        -------
+        pd.DataFrame
+            A DataFrame containing the results of the rolling operation.
 
         ---------------------------------------------------------------------------
 
         执行核心滚动窗口计算。
 
-        将时间序列函数（`_ts_func`）应用于每个滚动窗口。
-
-        ---------------------------------------------------------------------------
-
-        Parameters
-        ----------
-        array_obj : np.ndarray
-            The input array for rolling calculation.
-        pct : Optional[bool]
-            Whether to return percentage (passed to ts_func).
-        group_func : Optional[Callable]
-            An optional function to apply to the result of ts_func.
-        **kwargs : Any
-            Additional keyword arguments for group_func.
-
-        ---------------------------------------------------------------------------
-
         参数
         ----------
         array_obj : np.ndarray
-            用于滚动计算的输入数组。
+            要应用滚动窗口的NumPy数组。
         pct : Optional[bool]
-            是否返回百分比（传递给 ts_func）。
+            是否以百分比形式返回结果。默认为 None。
         group_func : Optional[Callable]
-            应用于 ts_func 结果的可选函数。
+            应用于每个窗口的聚合函数。默认为 None。
         **kwargs : Any
-            group_func 的附加关键字参数。
-
-        ---------------------------------------------------------------------------
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame containing the rolling results.
-
-        ---------------------------------------------------------------------------
+            传递给 `ts_func` 的附加关键字参数。
 
         返回
         -------
         pd.DataFrame
-            包含滚动结果的 DataFrame。
+            包含滚动操作结果的DataFrame。
 
         ---------------------------------------------------------------------------
         """
@@ -294,105 +250,88 @@ class _meta:
         window = self.window
         ascending = self._ascending
         count = self.count * (1 if ascending else -1)
-
         for i in range(window, idx_0 + 1):
             obj = array_obj[i - window: i]
             obj = self._ts_func(obj, cut=count, pct=pct, func=group_func, **kwargs)
             outer.append(obj)
-
         df = np.ma.concatenate(outer).reshape(-1, idx_1)
         lens = int(df.shape[0] / (idx_0 - window + 1))
         index = pd.MultiIndex.from_product(
-            [self._obj.index[window - 1:], range(lens)],
+            [self._obj.index[window - 1:], range(lens)], 
             names=[self._obj.index.name, 'RANGE']
         ) if lens > 1 else self._obj.index[window - 1:]
         df = pd.DataFrame(df, index=index, columns=self._obj.columns)
         return df
-
-
+    
     def _apply(
-        self,
-        array_obj: np.ndarray,
-        group_func: Callable,
+        self, 
+        array_obj: np.ndarray, 
+        group_func: Callable, 
         **kwargs: Any
     ) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Applies a function to the rolling window results.
-
-        ---------------------------------------------------------------------------
-
-        将函数应用于滚动窗口结果。
-
-        ---------------------------------------------------------------------------
+        Applies a custom function over the rolling window.
 
         Parameters
         ----------
         array_obj : np.ndarray
-            The input array.
+            The NumPy array to apply the function to.
         group_func : Callable
-            The function to apply.
+            The custom function to apply.
         **kwargs : Any
-            Additional keyword arguments for the function.
-
-        ---------------------------------------------------------------------------
-
-        参数
-        ----------
-        array_obj : np.ndarray
-            输入数组。
-        group_func : Callable
-            要应用的函数。
-        **kwargs : Any
-            函数的附加关键字参数。
-
-        ---------------------------------------------------------------------------
+            Additional keyword arguments passed to `group_func`.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with applied function results.
+            A DataFrame with the results of the applied function.
 
         ---------------------------------------------------------------------------
+
+        在滚动窗口上应用自定义函数。
+
+        参数
+        ----------
+        array_obj : np.ndarray
+            要应用函数的NumPy数组。
+        group_func : Callable
+            要应用的自定义函数。
+        **kwargs : Any
+            传递给 `group_func` 的附加关键字参数。
 
         返回
         -------
         pd.DataFrame
-            应用函数结果的 DataFrame。
+            应用函数结果的DataFrame。
 
         ---------------------------------------------------------------------------
         """
         return self._rolling_obj(array_obj, pct=None, group_func=group_func, **kwargs)
-
-
+    
 class _max(_meta):
     """
     ===========================================================================
 
-    Class for rolling maximum operations.
-
-    Inherits from _meta and provides methods for calculating mean, std, sum,
-    and applying custom functions on rolling maximums.
+    A class for calculating rolling maximums and related statistics.
 
     ---------------------------------------------------------------------------
 
-    滚动最大值操作的类。
-
-    继承自 _meta，并提供计算滚动最大值的均值、标准差、总和以及应用自定义函数的方法。
+    用于计算滚动最大值和相关统计数据的类。
 
     ---------------------------------------------------------------------------
     """
     def __init__(
-        self,
-        df_obj: pd.DataFrame,
-        window: int,
+        self, 
+        df_obj: pd.DataFrame, 
+        window: int, 
         min_periods: int
     ):
         """
         ===========================================================================
 
-        Initializes the _max class.
+        Initializes the _max class, setting up for rolling maximum calculations.
 
         Parameters
         ----------
@@ -405,45 +344,40 @@ class _max(_meta):
 
         ---------------------------------------------------------------------------
 
-        初始化 _max 类。
+        初始化_max类，为滚动最大值计算做准备。
 
         参数
         ----------
         df_obj : pd.DataFrame
-            输入 DataFrame。
+            输入DataFrame。
         window : int
             滚动窗口的大小。
         min_periods : int
-            窗口中需要有值的最小观察数。
+            窗口中需要有值的最小观测数。
 
         ---------------------------------------------------------------------------
         """
         super().__init__(df_obj, window, min_periods, ts_sort_unit, False)
-
-
+    
     def mean(self) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Calculates the mean of the rolling maximums.
-
-        ---------------------------------------------------------------------------
-
-        计算滚动最大值的均值。
-
-        ---------------------------------------------------------------------------
+        Calculates the rolling mean of the maximum values within each window.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with rolling maximum means.
+            A DataFrame with the rolling mean of maximums.
 
         ---------------------------------------------------------------------------
+
+        计算每个窗口内最大值的滚动平均值。
 
         返回
         -------
         pd.DataFrame
-            包含滚动最大值均值的 DataFrame。
+            包含最大值滚动平均值的DataFrame。
 
         ---------------------------------------------------------------------------
         """
@@ -451,31 +385,26 @@ class _max(_meta):
         x = x.reindex(self._obj.index)
         x = x[self._min_periods_mask >= self.min_periods]
         return x
-
-
+        
     def std(self) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Calculates the standard deviation of the rolling maximums.
-
-        ---------------------------------------------------------------------------
-
-        计算滚动最大值的标准差。
-
-        ---------------------------------------------------------------------------
+        Calculates the rolling standard deviation of the maximum values within each window.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with rolling maximum standard deviations.
+            A DataFrame with the rolling standard deviation of maximums.
 
         ---------------------------------------------------------------------------
+
+        计算每个窗口内最大值的滚动标准差。
 
         返回
         -------
         pd.DataFrame
-            包含滚动最大值标准差的 DataFrame。
+            包含最大值滚动标准差的DataFrame。
 
         ---------------------------------------------------------------------------
         """
@@ -483,31 +412,26 @@ class _max(_meta):
         x = x.reindex(self._obj.index)
         x = x[self._min_periods_mask >= self.min_periods]
         return x
-
-
+    
     def sum(self) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Calculates the sum of the rolling maximums.
-
-        ---------------------------------------------------------------------------
-
-        计算滚动最大值的总和。
-
-        ---------------------------------------------------------------------------
+        Calculates the rolling sum of the maximum values within each window.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with rolling maximum sums.
+            A DataFrame with the rolling sum of maximums.
 
         ---------------------------------------------------------------------------
+
+        计算每个窗口内最大值的滚动和。
 
         返回
         -------
         pd.DataFrame
-            包含滚动最大值总和的 DataFrame。
+            包含最大值滚动和的DataFrame。
 
         ---------------------------------------------------------------------------
         """
@@ -515,49 +439,44 @@ class _max(_meta):
         x = x.reindex(self._obj.index)
         x = x[self._min_periods_mask >= self.min_periods]
         return x
-
-
+    
     def apply(
-        self,
-        function: Callable,
+        self, 
+        function: Callable, 
         **func_kwds: Any
     ) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Applies a custom function to the rolling maximums.
+        Applies a custom function to the maximum values within each rolling window.
 
         Parameters
         ----------
         function : Callable
-            The function to apply.
+            The custom function to apply.
         **func_kwds : Any
-            Additional keyword arguments for the function.
-
-        ---------------------------------------------------------------------------
-
-        将自定义函数应用于滚动最大值。
-
-        参数
-        ----------
-        function : Callable
-            要应用的函数。
-        **func_kwds : Any
-            函数的附加关键字参数。
-
-        ---------------------------------------------------------------------------
+            Additional keyword arguments to pass to the function.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with applied function results.
+            A DataFrame with the results of the applied function.
 
         ---------------------------------------------------------------------------
+
+        将自定义函数应用于每个滚动窗口内的最大值。
+
+        参数
+        ----------
+        function : Callable
+            要应用的自定义函数。
+        **func_kwds : Any
+            要传递给函数的附加关键字参数。
 
         返回
         -------
         pd.DataFrame
-            应用函数结果的 DataFrame。
+            应用函数结果的DataFrame。
 
         ---------------------------------------------------------------------------
         """
@@ -565,65 +484,55 @@ class _max(_meta):
         x = x.reindex(self._obj.index)
         x = x[self._min_periods_mask >= self.min_periods]
         return x
-
-
+    
     @property
     def values(self) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Returns the raw rolling maximum values.
-
-        ---------------------------------------------------------------------------
-
-        返回原始滚动最大值。
-
-        ---------------------------------------------------------------------------
+        Returns the raw maximum values within each rolling window.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with raw rolling maximum values.
+            A DataFrame containing the maximum values for each window.
 
         ---------------------------------------------------------------------------
+
+        返回每个滚动窗口内的原始最大值。
 
         返回
         -------
         pd.DataFrame
-            包含原始滚动最大值的 DataFrame。
+            包含每个窗口最大值的DataFrame。
 
         ---------------------------------------------------------------------------
         """
         x = self._rolling_obj(self._masked_obj, False, None)
         return x
 
-
-class _min(_max):
+class _min(_max, _meta):
     """
     ===========================================================================
 
-    Class for rolling minimum operations.
-
-    Inherits from _max and reconfigures for minimum calculations.
+    A class for calculating rolling minimums.
 
     ---------------------------------------------------------------------------
 
-    滚动最小值操作的类。
-
-    继承自 _max 并重新配置以进行最小值计算。
+    用于计算滚动最小值的类。
 
     ---------------------------------------------------------------------------
     """
     def __init__(
-        self,
-        df_obj: pd.DataFrame,
-        window: int,
+        self, 
+        df_obj: pd.DataFrame, 
+        window: int, 
         min_periods: int
     ):
         """
         ===========================================================================
 
-        Initializes the _min class.
+        Initializes the _min class, setting up for rolling minimum calculations.
 
         Parameters
         ----------
@@ -636,48 +545,43 @@ class _min(_max):
 
         ---------------------------------------------------------------------------
 
-        初始化 _min 类。
+        初始化_min类，为滚动最小值计算做准备。
 
         参数
         ----------
         df_obj : pd.DataFrame
-            输入 DataFrame。
+            输入DataFrame。
         window : int
             滚动窗口的大小。
         min_periods : int
-            窗口中需要有值的最小观察数。
+            窗口中需要有值的最小观测数。
 
         ---------------------------------------------------------------------------
         """
-        super().__init__(df_obj, window, min_periods, ts_sort_unit, True)
-
+        _meta.__init__(self, df_obj, window, min_periods, ts_sort_unit, True)
 
 class _rank(_meta):
     """
     ===========================================================================
 
-    Class for rolling rank operations.
-
-    Inherits from _meta and provides methods for calculating rolling ranks.
+    A class for calculating rolling ranks.
 
     ---------------------------------------------------------------------------
 
-    滚动排名操作的类。
-
-    继承自 _meta 并提供计算滚动排名的方法。
+    用于计算滚动排名的类。
 
     ---------------------------------------------------------------------------
     """
     def __init__(
-        self,
-        df_obj: pd.DataFrame,
-        window: int,
+        self, 
+        df_obj: pd.DataFrame, 
+        window: int, 
         min_periods: int
     ):
         """
         ===========================================================================
 
-        Initializes the _rank class.
+        Initializes the _rank class, setting up for rolling rank calculations.
 
         Parameters
         ----------
@@ -690,58 +594,53 @@ class _rank(_meta):
 
         ---------------------------------------------------------------------------
 
-        初始化 _rank 类。
+        初始化_rank类，为滚动排名计算做准备。
 
         参数
         ----------
         df_obj : pd.DataFrame
-            输入 DataFrame。
+            输入DataFrame。
         window : int
             滚动窗口的大小。
         min_periods : int
-            窗口中需要有值的最小观察数。
+            窗口中需要有值的最小观测数。
 
         ---------------------------------------------------------------------------
         """
         super().__init__(df_obj, window, min_periods, ts_rank_unit, False)
 
-
     def __call__(
-        self,
+        self, 
         pct: bool
     ) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Calculates the rolling rank.
+        Calculates the rolling rank of the DataFrame values.
 
         Parameters
         ----------
         pct : bool
-            If True, return rank as a percentage.
-
-        ---------------------------------------------------------------------------
-
-        计算滚动排名。
-
-        参数
-        ----------
-        pct : bool
-            如果为 True，则以百分比形式返回排名。
-
-        ---------------------------------------------------------------------------
+            Whether to return the rank as a percentage.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with rolling ranks.
+            A DataFrame with the rolling ranks.
 
         ---------------------------------------------------------------------------
+
+        计算DataFrame值的滚动排名。
+
+        参数
+        ----------
+        pct : bool
+            是否以百分比形式返回排名。
 
         返回
         -------
         pd.DataFrame
-            包含滚动排名的 DataFrame。
+            包含滚动排名的DataFrame。
 
         ---------------------------------------------------------------------------
         """
@@ -749,58 +648,51 @@ class _rank(_meta):
         x = x.reindex(self._obj.index)
         x = x[self._min_periods_mask >= self.min_periods]
         return x
-
-
-class rolls:
+    
+class _rolls():
     """
     ===========================================================================
 
-    Main class for time-series rolling operations.
-
-    Provides an interface to perform various rolling calculations like max,
-    min, and rank on a DataFrame.
+    A container class for various rolling window operations.
 
     ---------------------------------------------------------------------------
 
-    时间序列滚动操作的主类。
-
-    提供对 DataFrame 执行各种滚动计算（如最大值、最小值和排名）的接口。
+    各种滚动窗口操作的容器类。
 
     ---------------------------------------------------------------------------
     """
     def __init__(
-        self,
-        pandas_obj: pd.DataFrame,
-        window: int,
+        self, 
+        pandas_obj: pd.DataFrame, 
+        window: int, 
         min_periods: Optional[int] = None
     ):
         """
         ===========================================================================
 
-        Initializes the rolls class.
+        Initializes the _rolls class with the DataFrame, window size, and minimum periods.
 
         Parameters
         ----------
         pandas_obj : pd.DataFrame
-            The input DataFrame.
+            The input DataFrame for rolling operations.
         window : int
             The size of the rolling window.
         min_periods : Optional[int], optional
-            Minimum number of observations in window required to have a value,
-            by default None (defaults to window).
+            Minimum number of observations in window required to have a value. Defaults to None.
 
         ---------------------------------------------------------------------------
 
-        初始化 rolls 类。
+        使用DataFrame、窗口大小和最小周期初始化_rolls类。
 
         参数
         ----------
         pandas_obj : pd.DataFrame
-            输入 DataFrame。
+            用于滚动操作的输入DataFrame。
         window : int
             滚动窗口的大小。
         min_periods : Optional[int], optional
-            窗口中需要有值的最小观察数，默认为 None（默认为 window）。
+            窗口中需要有值的最小观测数。默认为 None。
 
         ---------------------------------------------------------------------------
         """
@@ -810,134 +702,120 @@ class rolls:
         self._max_class = _max(pandas_obj, self.window, self.min_periods)
         self._min_class = _min(pandas_obj, self.window, self.min_periods)
         self._rank_class = _rank(pandas_obj, self.window, self.min_periods)
-
-
+        
     def max(
-        self,
+        self, 
         count: Optional[int] = None
     ) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Calculates the rolling maximum.
+        Returns a rolling maximum object, optionally specifying the number of maximums to retrieve.
 
         Parameters
         ----------
         count : Optional[int], optional
-            The number of maximum values to return, by default None (defaults to window).
-
-        ---------------------------------------------------------------------------
-
-        计算滚动最大值。
-
-        参数
-        ----------
-        count : Optional[int], optional
-            要返回的最大值数量，默认为 None（默认为 window）。
-
-        ---------------------------------------------------------------------------
+            The number of maximum values to retrieve from each window. Defaults to None.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with rolling maximums.
+            A DataFrame representing the rolling maximums.
 
         ---------------------------------------------------------------------------
+
+        返回一个滚动最大值对象，可选地指定要检索的最大值数量。
+
+        参数
+        ----------
+        count : Optional[int], optional
+            从每个窗口中检索的最大值数量。默认为 None。
 
         返回
         -------
         pd.DataFrame
-            包含滚动最大值的 DataFrame。
+            表示滚动最大值的DataFrame。
 
         ---------------------------------------------------------------------------
         """
         count = self.window if count is None else count
         x = self._max_class(count)
         return x
-
-
+    
     def min(
-        self,
+        self, 
         count: Optional[int] = None
     ) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Calculates the rolling minimum.
+        Returns a rolling minimum object, optionally specifying the number of minimums to retrieve.
 
         Parameters
         ----------
         count : Optional[int], optional
-            The number of minimum values to return, by default None (defaults to window).
-
-        ---------------------------------------------------------------------------
-
-        计算滚动最小值。
-
-        参数
-        ----------
-        count : Optional[int], optional
-            要返回的最小值数量，默认为 None（默认为 window）。
-
-        ---------------------------------------------------------------------------
+            The number of minimum values to retrieve from each window. Defaults to None.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with rolling minimums.
+            A DataFrame representing the rolling minimums.
 
         ---------------------------------------------------------------------------
+
+        返回一个滚动最小值对象，可选地指定要检索的最小值数量。
+
+        参数
+        ----------
+        count : Optional[int], optional
+            从每个窗口中检索的最小值数量。默认为 None。
 
         返回
         -------
         pd.DataFrame
-            包含滚动最小值的 DataFrame。
+            表示滚动最小值的DataFrame。
 
         ---------------------------------------------------------------------------
         """
         count = self.window if count is None else count
         x = self._min_class(count)
         return x
-
-
+        
     def ts_rank(
-        self,
+        self, 
         pct: bool = True
     ) -> pd.DataFrame:
         """
         ===========================================================================
 
-        Calculates the time-series rolling rank.
+        Calculates the time-series rank within the rolling window.
 
         Parameters
         ----------
         pct : bool, optional
-            If True, return rank as a percentage, by default True.
-
-        ---------------------------------------------------------------------------
-
-        计算时间序列滚动排名。
-
-        参数
-        ----------
-        pct : bool, optional
-            如果为 True，则以百分比形式返回排名，默认为 True。
-
-        ---------------------------------------------------------------------------
+            Whether to return the rank as a percentage. Defaults to True.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with time-series rolling ranks.
+            A DataFrame with the time-series ranks.
 
         ---------------------------------------------------------------------------
+
+        计算滚动窗口内的时间序列排名。
+
+        参数
+        ----------
+        pct : bool, optional
+            是否以百分比形式返回排名。默认为 True。
 
         返回
         -------
         pd.DataFrame
-            包含时间序列滚动排名的 DataFrame。
+            包含时间序列排名的DataFrame。
 
         ---------------------------------------------------------------------------
         """
         x = self._rank_class(pct)
         return x
+    

@@ -8,7 +8,7 @@ Created on Thu Jul 17 15:18:48 2025
 import numpy as np
 import pandas as pd
 from typing import Union, List, Any, Optional
-from __pandas__.config import tools as config
+from __pandas__.config import TOOLS as config
 from libs.utils.finance.tools.main import fillna, shift, log
 from typing import Optional, Dict, Any, List, Union, Callable
 

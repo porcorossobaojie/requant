@@ -7,7 +7,7 @@ Created on Thu Jul 17 15:18:48 2025
 """
 
 from libs.utils.finance.stats.main import standard, OLS, neutral, const
-from __pandas__.config import stats as config
+from __pandas__.config import STATS as config
 
 import numpy as np
 import pandas as pd

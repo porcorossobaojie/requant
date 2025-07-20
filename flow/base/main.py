@@ -23,7 +23,7 @@ def __table_info__(how: str = 'DataFrame'):
     df = __source__()().__schema_info__(
         where="{schema_info} = '{schema}'".format(
             schema_info=DB_INFO.schema_info, 
-            schema=__source__()().schema
+            schema=__source__().schema
         )
     )
     df.columns = df.columns.str.upper()

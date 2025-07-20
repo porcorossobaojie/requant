@@ -326,7 +326,6 @@ class TRADE_DT_TABLES:
                     'name': {'S_INFO_COMPNAME_EN': ['VARCHAR(16)', '股票名称_英文', ]},
                     'start_date': {'S_INFO_LISTDATE': ['datetime', '上市日期', ]},
                     'end_date': {'S_INFO_DELISTDATE': ['datetime', '退市日期', ]},
-                    '': {'TRADE_DT': ['datetime', '交易日', ]},
                     },
                 'jq_command': "jq.get_all_securities(['stock'], None).reset_index()",
                 }

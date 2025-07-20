@@ -36,7 +36,6 @@ class MySQL(DB_LOGIN_INFO.MySQL):
     @classmethod
     def __URL__(
         cls,
-        schema: str,
         **kwargs: Dict[str, Any]
     ) -> str:
         """
@@ -80,7 +79,7 @@ class MySQL(DB_LOGIN_INFO.MySQL):
         """
         return (
             "{mysql_connect}{user}:{password}@{host}:{port}/{schema}?charset={charset}"
-        ).format(schema=schema, **kwargs)
+        ).format(**kwargs)
 
 
 class DuckDB(DB_LOGIN_INFO.DuckDB):

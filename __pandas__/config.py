@@ -121,7 +121,8 @@ class TOOLS:
     """
     CLASS_NAME: str = 'tools'
         
-        
+class BACK_TEST:
+    CLASS_NAME:str = 'capital'
         
         
         

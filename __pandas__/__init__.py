@@ -21,6 +21,7 @@ import warnings
 # Third-party library imports
 import matplotlib.pyplot as plt
 from pylab import mpl
+import pandas as pd
 
 # Local project-specific imports
 from __pandas__ import __analysis__
@@ -29,7 +30,11 @@ from __pandas__ import __DB__
 from __pandas__ import __rolls__
 from __pandas__ import __stats__
 from __pandas__ import __tools__
+def capitalize():
+    import __pandas__.__back_test__
 
+        
+pd.capitalize = capitalize
 warnings.simplefilter(action='ignore')
 mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
 

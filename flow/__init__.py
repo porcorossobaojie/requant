@@ -10,6 +10,7 @@ import re
 import jqdatasdk as jq
 from typing import List, Optional, Union
 
+import __pandas__
 __DATA_INIT__ = 'min'
 
 from flow.main.main import stock as __STOCK__, index as __INDEX__, trade_days as __TRADE_DAYS__

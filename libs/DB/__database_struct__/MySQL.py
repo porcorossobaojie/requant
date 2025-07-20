@@ -103,7 +103,6 @@ class main(meta):
 
     def __engine__(
         self,
-        schema: str,
         **kwargs: Any
     ) -> Engine:
         """
@@ -146,7 +145,7 @@ class main(meta):
         ---------------------------------------------------------------------------
         """
         parameters = self.__parameters__(kwargs)
-        connection_string = self.__URL__(schema, **parameters)
+        connection_string = self.__URL__(**parameters)
         engine = create_engine(connection_string)
         return engine
 
