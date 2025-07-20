@@ -246,6 +246,8 @@ def portfolio(
 
     ---------------------------------------------------------------------------
     """
+    returns = returns.rolling(roll).mean().shift((roll - 1 + shift) * -1)
+    df_obj = (fillna_func(df_obj, returns.index) if fillna else df_obj)
     if df_obj.columns.nlevels == 1:
         df_obj.columns = pd.MultiIndex.from_product(
             [['__factor__'], df_obj.columns], 
