@@ -56,5 +56,13 @@ ACCOUNTS: List[Dict[str, Any]] = [
         'data_format': 'tonghua'
     },
 
-    
+    {
+        'name':        'ALEXLOU88', 
+        'id':          '0331330018804897',
+        'password':    '379103',
+        'broker':      'guotai',
+        'assets':      790000,
+        'type':        'trade',
+        'data_format': 'tonghua'
+    },
 ]

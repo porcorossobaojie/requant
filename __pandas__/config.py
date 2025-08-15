@@ -124,5 +124,7 @@ class TOOLS:
 class BACK_TEST:
     CLASS_NAME:str = 'capital'
         
+class FACTORIZE:
+    CLASS_NAME:str = 'f'
         
         

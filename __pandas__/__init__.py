@@ -30,11 +30,15 @@ from __pandas__ import __DB__
 from __pandas__ import __rolls__
 from __pandas__ import __stats__
 from __pandas__ import __tools__
+
 def capitalize():
     import __pandas__.__back_test__
 
+def factorize():
+    import __pandas__.__factorize__
         
 pd.capitalize = capitalize
+pd.Factorize = factorize
 warnings.simplefilter(action='ignore')
 mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
 

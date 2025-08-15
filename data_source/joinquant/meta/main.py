@@ -63,7 +63,7 @@ class main(db.__DB_CLASS_DIC__[SOURCE], TABLE_INFO_AND_PUBLIC_KEYS, FILTER, geta
         self.__env_init__()
         self._stock = jq.get_all_securities('stock', date=None).index.tolist()
         trade_days = pd.to_datetime(jq.get_trade_days('2005-01-01')) + self.time_bias
-        self._trade_days = trade_days[trade_days <= pd.Timestamp.today() - pd.Timedelta(5, 'h')]
+        self._trade_days = trade_days[trade_days <= pd.Timestamp.today() - pd.Timedelta(4, 'h')]
     
     @property
     def columns(self) -> Dict:

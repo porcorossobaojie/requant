@@ -14,3 +14,27 @@ class DB_INFO:
     table_info = 'TABLE_NAME'
     columns_info = 'COLUMN_NAME'
     comment_info = 'COLUMN_COMMENT'
+
+class FACTORIZE:
+    on_list_limit = 126
+    index_mapping =  {
+        '50': '000016.XSHG',
+        '000016': '000016.XSHG', 
+        '000016.XSHG': '000016.XSHG',
+        '300': '399300.XSHE',
+        '399300': '399300.XSHE',
+        '399300.XSHE': '399300.XSHE',
+        '500': '000905.XSHG',
+        '000905': '000905.XSHG',
+        '000905.XSHG': '000905.XSHG',
+        '1000': '000852.XSHG',
+        '000852': '000852.XSHG',
+        '000852.XSHG': '000852.XSHG',
+        '2000': '399303.XSHE',
+        '399303': '399303.XSHE',
+        '399303.XSHE': '399303.XSHE',
+        'full': '000985.XSHG',
+        '000985': '000985.XSHG',
+        '000985.XSHG':'000985.XSHG',
+        }
+    star_info = ['002', '300', '688', '301']

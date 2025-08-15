@@ -28,7 +28,7 @@ class running_001:
     HZG_15201991795: Dict[str, Any] = {
         'count':       50,
         'max_filter':  250,
-        'not_star': True
+        'not_star': False
     }
     CSQ_stockay: Dict[str, Any] = {
         'count': 500,
@@ -45,4 +45,8 @@ class running_001:
         'not_star': False
     }
 
-
+    ALEXLOU88: Dict[str, Any] = {
+        'count':       25,
+        'max_filter':  250,
+        'not_star': True
+    }

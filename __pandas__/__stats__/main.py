@@ -7,6 +7,7 @@ Created on Thu Jul 17 15:18:48 2025
 """
 
 from libs.utils.finance.stats.main import standard, OLS, neutral, const
+from libs.utils.finance.build.dev import neutral as neutral_dev
 from __pandas__.config import STATS as config
 
 import numpy as np
@@ -59,7 +60,7 @@ class main():
         
     def OLS(
         self, 
-        const: bool = False, 
+        const: bool = True, 
         roll: Optional[int] = None, 
         min_periods: Optional[int] = None, 
         dropna: bool = True, 
@@ -82,6 +83,16 @@ class main():
     ) -> Any:
         return neutral(self._obj, const=const, neu_axis=neu_axis, periods=periods, flatten=flatten, w=weight, resid=resid, **key_dfs)
         
+    def neutral_dev(
+        self, 
+        const: bool = True, 
+        neu_axis: int = 1, 
+        periods: Optional[int] = None, 
+        flatten: bool = False,  
+        resid: bool = True, 
+        **key_dfs: pd.DataFrame
+    ) -> Any:
+        return neutral_dev(self._obj, const=const, neu_axis=neu_axis, periods=periods, flatten=flatten, resid=resid, **key_dfs)
         
         
         

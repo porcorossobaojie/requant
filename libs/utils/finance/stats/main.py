@@ -87,7 +87,7 @@ def standard(
 
 def OLS(
     df_obj: pd.DataFrame,
-    const: bool = False,
+    const: bool = True,
     roll: Optional[int] = None,
     min_periods: Optional[int] = None,
     dropna: bool = True,
@@ -465,7 +465,7 @@ def __lstsq(
     y = matrix[:, 0]
     
     # Check for sufficient data points for regression
-    if (matrix.shape[0] > matrix.shape[1] * 2) and matrix.shape[0] > 5:
+    if (matrix.shape[0] > matrix.shape[1] * 2) and matrix.shape[0] > 2:
         x = matrix[:, 1:]
         xT = x.T
         if w is None:

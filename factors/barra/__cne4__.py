@@ -298,7 +298,7 @@ class main(meta):
             mkt = flow.index('s_dq_pctchange')['000905.XSHG']
             mkt = mkt.reindex(returns.index)
             mkt = pd.DataFrame(mkt.values.repeat(df.shape[-1]).reshape(returns.shape[0], -1), index=df.index, columns=df.columns)
-
+            # standard versiond
             parameters = df.stats.neutral(market=mkt, neu_axis=0, periods=periods, weight=(self.__half_life__(periods, periods // 4)))
             beta = parameters.params['market'].unstack().reindex_like(returns)
             alpha =  parameters.params['const'].unstack().reindex_like(returns)
@@ -306,7 +306,6 @@ class main(meta):
             self._L1_Beta_beta = beta
             self._L1_Beta_alpha = alpha
             self._L1_Beta_resid = resid
-            
         return self._L1_Beta_beta
         
     def L1_Momentum(

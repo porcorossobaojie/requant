@@ -34,6 +34,8 @@ def __table_info__(how: str = 'DataFrame'):
               (df[DB_INFO.table_info].str.contains('ashareincome') &
                df[DB_INFO.columns_info].isin(['EPS']))
               | df[DB_INFO.table_info].str.contains('ashareperformance_lt')
+              |(df[DB_INFO.table_info].str.contains('asharecashflow') &
+               df[DB_INFO.columns_info].isin(['NET_PROFIT']))
             )]
     if how == 'DataFrame':
         df = df.loc[:, df.columns.isin(filter_parent_class_attrs(DB_INFO).values())]

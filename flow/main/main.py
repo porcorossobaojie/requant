@@ -11,6 +11,7 @@ import pandas as pd
 from flow.config import FILTER, COLUMNS_INFO, DB_INFO
 from flow.base.main import __table_info__, __table_attr__
 from flow.meta.main import data_source
+from local.login_info import JQ_LOGIN_INFO
 
 STOCK: Dict[str, Any] = {}
 INDEX: Dict[str, Any] = {}
@@ -21,8 +22,7 @@ _HELP: pd.DataFrame = __table_info__('DataFrame')
 
 try:
     import jqdatasdk as jq
-    params = {'username': '13611823855', 'password': 'Bj123!@#'}
-    jq.auth(**params)
+    jq.auth(**JQ_LOGIN_INFO)
     days = jq.get_trade_days('2005-01-01')
     days = pd.Index([pd.to_datetime(i) + pd.Timedelta(15, 'h') for i in days], name=COLUMNS_INFO.trade_dt)
     days = days[days < pd.Timestamp.today() - pd.Timedelta(4, 'h')]
@@ -514,7 +514,7 @@ class stock():
         """
         if not hasattr(self, '_be_list'):
             df = self(['S_INFO_LISTDATE', 'S_INFO_DELISTDATE'], **kwargs).set_index('S_INFO_DELISTDATE', append=True).iloc[:, 0].unstack().T
-            df = df.bfill(limit=1).reindex(pd.date_range(df.min().min(), trade_days.max(), name=COLUMNS_INFO.trade_dt)).bfill().ffill()
+            df = df.bfill().reindex(pd.date_range(df.min().min(), trade_days.max(), name=COLUMNS_INFO.trade_dt)).bfill().ffill()
             df = ((df.sub(df.index, axis=0).astype('int64') / 8.64e13) * -1).round(0)
             df.index = df.index + pd.Timedelta(15, 'h')
             df = df[df > 0]
@@ -724,7 +724,7 @@ class index():
         """
         if not hasattr(self, '_index_member'):
             df = self.__call__(['S_INFO_IDXCODE', 'S_DQ_IDXWEIGHT'], **kwargs)
-            df['S_DQ_IDXWEIGHT'] = df['S_DQ_IDXWEIGHT'] / 100
+            df['S_DQ_IDXWEIGHT'] = df['S_DQ_IDXWEIGHT']
             df.index.names = [COLUMNS_INFO.trade_dt, COLUMNS_INFO.code]
             dic = {}
             for i,j in df.groupby('S_INFO_IDXCODE'):
