@@ -6,7 +6,7 @@ Created on Wed Mar 26 15:31:55 2025
 """
 
 import flow
-from flow.config import COLUMNS_INFO
+from flow import COLUMNS_INFO
 import pandas as pd
 import numpy as np
 from typing import Any, Dict, List, Optional, Union

@@ -65,12 +65,12 @@ class meta:
         ---------------------------------------------------------------------------
         """
         if isinstance(obj, (pd.DataFrame, pd.Series)):
-            if flow.config.COLUMNS_INFO.code == obj.index.name:
+            if flow.COLUMNS_INFO.code == obj.index.name:
                 x = [''.join(re.findall(r'\d+', str(i))).zfill(6) for i in obj.index]
                 if how =='jq':
                     x = data_source.joinquant.normalize_code(x)
                 obj.index = pd.Index(x, name=obj.index.name)
-            elif flow.config.COLUMNS_INFO.code == obj.columns.name:
+            elif flow.COLUMNS_INFO.code == obj.columns.name:
                 x = [''.join(re.findall(r'\d+', str(i))).zfill(6) for i in obj.columns]
                 if how =='jq':
                     x = data_source.joinquant.normalize_code(x)
@@ -135,9 +135,9 @@ class tonghua(meta):
 
     ---------------------------------------------------------------------------
     """
-    order_rename: Dict[str, str] = {flow.config.COLUMNS_INFO.code:'证券代码', 'share':'成份数量'}
+    order_rename: Dict[str, str] = {flow.COLUMNS_INFO.code:'证券代码', 'share':'成份数量'}
     order_columns: List[str] = ['证券代码','成份数量'] #'资金比例%']
-    settle_rename: Dict[str, str] = {'证券代码': flow.config.COLUMNS_INFO.code}
+    settle_rename: Dict[str, str] = {'证券代码': flow.COLUMNS_INFO.code}
     settle_columns: List[str] = ['证券代码', '股票余额', '持仓数量', '成份数量', '当前数量']
     
     @classmethod
@@ -263,11 +263,11 @@ class tonghua(meta):
         try:
             df = (pd.read_csv(all_file_name, encoding='gbk', sep='\t')
                   .reindex(cls.settle_columns, axis=1).rename(cls.settle_rename, axis=1).dropna(how='all', axis=1)
-                  .set_index(flow.config.COLUMNS_INFO.code).iloc[:, 0].rename(date))
+                  .set_index(flow.COLUMNS_INFO.code).iloc[:, 0].rename(date))
         except:
             df = (pd.read_csv(all_file_name, encoding='gbk')
                   .reindex(cls.settle_columns, axis=1).rename(cls.settle_rename, axis=1).dropna(how='all', axis=1)
-                  .set_index(flow.config.COLUMNS_INFO.code).iloc[:, 0].rename(date))
+                  .set_index(flow.COLUMNS_INFO.code).iloc[:, 0].rename(date))
             
         if df.index[-1] == 'cash':
             cash = df.iloc[-1]

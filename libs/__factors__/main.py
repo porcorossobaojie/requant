@@ -7,10 +7,10 @@ Created on Mon Feb 17 23:25:51 2025
 
 import numpy as np
 import pandas as pd
-import flow
-from flow import COLUMNS_INFO
-from factors.config import PROPERTY_ATTRS_DIC, LIMIT
-from typing import Any, Dict, List, Optional, Union
+from libs import flow
+from libs.flow.config import COLUMNS_INFO
+from libs.__factors__.config import LIMIT
+from typing import Any
 
 class main(LIMIT):
     """

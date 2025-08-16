@@ -40,7 +40,7 @@ Once the goal is clear, I will break down the task into a logical, step-by-step 
 
 ### Step 4: Execute with Integrated Expertise
 During execution, I will operate with our project's best interests in mind:
-*   **Adherence to Standards:** I will rigorously follow `code_standards_new.md` and `readme_standards_new.md` without exception.
+*   **Adherence to Standards:** I will rigorously follow `code_standards.md` and `readme_standards.md` without exception.
 *   **Performance First:** I will default to vectorized, performant `numpy` and `pandas` operations, as is critical in quantitative work.
 *   **Financial Edge Cases:** I will proactively consider and handle common financial data issues (e.g., `NaN` values from look-ahead windows, market holidays, zero-variance data).
 
@@ -122,7 +122,7 @@ If you encounter `access violation` or other low-level errors when using `pip in
 
 ### 第四步：融合专业知识执行任务
 在执行过程中，我将以我们项目的最高利益为出发点：
-*   **遵守标准：** 我将严格遵守 `code_standards_new.md` 和 `readme_standards_new.md`，无一例外。
+*   **遵守标准：** 我将严格遵守 `code_standards.md` 和 `readme_standards.md`，无一例外。
 *   **性能优先：** 我将默认使用向量化的、高性能的 `numpy` 和 `pandas` 操作，这在量化工作中至关重要。
 *   **金融领域的边界情况：** 我将主动考虑并处理常见的金融数据问题（例如，由前瞻窗口产生的 `NaN` 值、市场假日、零方差数据）。
 

@@ -6,7 +6,7 @@ Created on Mon Feb 24 15:46:46 2025
 """
 
 import flow
-from flow.config import COLUMNS_INFO
+from flow import COLUMNS_INFO
 import numpy as np
 import pandas as pd
 from libs.utils.functions import flatten_list

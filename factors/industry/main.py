@@ -7,7 +7,7 @@ Created on Wed May 28 11:14:58 2025
 
 
 import flow
-from flow.config import COLUMNS_INFO
+from flow import COLUMNS_INFO
 from factors import barra
 import numpy as np
 import pandas as pd

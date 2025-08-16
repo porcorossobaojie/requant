@@ -86,18 +86,18 @@ class main(meta, volatility):
         periods = self.__AMOUNT__.periods
         x = flow.stock('S_DQ_AMOUNT')     
         data = {i : np.log(x.rolling(i, min_periods=min(periods)).std().replace(0, np.nan)) for i in periods}
-        df = pd.concat(data, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        df = pd.concat(data, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         df = self.reversal(df, reversal) * -1 # rolling(3).max is more effective, but less in fac self corr, so use mean
         
         diff_data = df.diff()
         diff_1 = {i : diff_data.ewm(halflife=i // 4).sum() for i in periods}
-        diff_1 = pd.concat(diff_1, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        diff_1 = pd.concat(diff_1, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         z_mean = diff_1.copy()
         diff_1 = diff_1.stats.standard(axis=1)
         diff_1 = self.reversal(diff_1, reversal)
         
         diff_std = {i: diff_data.rolling(i, min_periods=periods[0]).std().replace(0, np.nan) for i in periods}
-        diff_std = pd.concat(diff_std, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        diff_std = pd.concat(diff_std, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         z_std = diff_std.copy()
         diff_std = diff_std.stats.standard(axis=1)
         diff_std =  self.reversal(diff_std, reversal) * -1
@@ -154,18 +154,18 @@ class main(meta, volatility):
         x = flow.stock('S_DQ_FREETURNOVER') / 100
         
         data = {i : np.log(x.rolling(i, min_periods=min(periods)).std().replace(0, np.nan)) for i in periods}
-        df = pd.concat(data, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        df = pd.concat(data, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         df = self.reversal(df, reversal) * -1 # rolling(3).max is more effective, but less in fac self corr, so use mean
         
         diff_data = df.diff()
         diff_1 = {i : diff_data.ewm(halflife=i // 1).sum() for i in periods}
-        diff_1 = pd.concat(diff_1, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        diff_1 = pd.concat(diff_1, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         z_mean = diff_1.copy()
         diff_1 = diff_1.stats.standard(axis=1)
         #diff_1 = self.reversal(diff_1, reversal)
         
         diff_std = {i: diff_data.rolling(i, min_periods=periods[0]).std().replace(0, np.nan) for i in periods}
-        diff_std = pd.concat(diff_std, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        diff_std = pd.concat(diff_std, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         z_std = diff_std.copy()
         diff_std = diff_std.stats.standard(axis=1)
         diff_std =  self.reversal(diff_std, reversal) * -1
@@ -217,8 +217,8 @@ class main(meta, volatility):
         pct = flow.stock('s_dq_pctchange')
         obj = {i:{pct.index[j + i]:pct.iloc[j:j + i].cumsum() for j in range(len(pct) - i)} for i in periods}
         obj = {i:{k:(l.max() - l.iloc[-1:].mean()) ** 2 - (l.min() - l.iloc[-1:].mean()) ** 2   for k,l in j.items()} for i,j in obj.items()}
-        obj = pd.concat(obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
-        obj.index.name = flow.config.COLUMNS_INFO.trade_dt
+        obj = pd.concat(obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean()
+        obj.index.name = flow.COLUMNS_INFO.trade_dt
         obj = self.filter(obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid)
         factor = obj
         return factor
@@ -263,7 +263,7 @@ class main(meta, volatility):
         turn = (flow.stock('S_DQ_FREETURNOVER') / 100).replace(0, np.nan).pct_change()    
         obj = {i:pct.rolling(i, min_periods=periods[0]).corr(turn) for i in periods}
         obj = {i: j[(j >= -1) & (j <= 1)] for i,j in obj.items()}
-        obj = pd.concat(obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        obj = pd.concat(obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         factor = self.reversal(obj, reversal).stats.standard() * -1
         factor = self.merge(factor)    
         return factor
@@ -306,29 +306,29 @@ class main(meta, volatility):
         amount = flow.stock('s_dq_amount')
         pct = flow.stock('s_dq_pctchange')
         obj = {i:amount.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        obj = pd.concat(obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        obj = pd.concat(obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         obj = obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
 
         diff_1 = obj.diff()
         diff_1_obj = {i:diff_1.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        diff_1_obj = pd.concat(diff_1_obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        diff_1_obj = pd.concat(diff_1_obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         diff_1_obj = diff_1_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
         
         diff_2 = diff_1_obj.diff()
         diff_2_obj = {i:diff_2.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        diff_2_obj = pd.concat(diff_2_obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        diff_2_obj = pd.concat(diff_2_obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         diff_2_obj = diff_2_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
         
         std_1 = {i:obj.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        std_1_obj = pd.concat(std_1, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        std_1_obj = pd.concat(std_1, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         std_1_obj = std_1_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
         
         std_2 = {i:std_1_obj.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        std_2_obj = pd.concat(std_2, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        std_2_obj = pd.concat(std_2, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         std_2_obj = std_2_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
         
         fac = pd.concat({i:j for i,j in enumerate([obj, diff_1_obj, diff_2_obj, std_1_obj, std_2_obj])}, axis=1)
-        fac = fac.groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        fac = fac.groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         
         #fac = barra.cn4.neutral(fac)
         
@@ -372,21 +372,21 @@ class main(meta, volatility):
         pct = flow.stock('s_dq_pctchange')
         obj = flow.stock('s_dq_amount')
         obj = {i:obj.rolling(i, min_periods=rolling_list[0]).mean() / obj.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        obj = pd.concat(obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        obj = pd.concat(obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         obj = obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid
         
         diff_1 = obj.diff()
         diff_1_obj = {i:diff_1.rolling(i, min_periods=rolling_list[0]).mean() / diff_1.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        diff_1_obj = pd.concat(diff_1_obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        diff_1_obj = pd.concat(diff_1_obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         diff_1_obj = diff_1_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid
         
         diff_2 = diff_1_obj.diff()
         diff_2_obj = {i:diff_2.rolling(i, min_periods=rolling_list[0]).mean() / diff_2.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        diff_2_obj = pd.concat(diff_2_obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        diff_2_obj = pd.concat(diff_2_obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         diff_2_obj = diff_2_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid
         
         fac = pd.concat({i:j for i,j in enumerate([obj, diff_1_obj, diff_2_obj])}, axis=1)
-        fac = fac.groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        fac = fac.groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         
         return fac
         
@@ -428,29 +428,29 @@ class main(meta, volatility):
         amount = flow.stock('s_dq_freeturnover')
         pct = flow.stock('s_dq_pctchange')
         obj = {i:amount.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        obj = pd.concat(obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        obj = pd.concat(obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         obj = obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
 
         diff_1 = obj.diff()
         diff_1_obj = {i:diff_1.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        diff_1_obj = pd.concat(diff_1_obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        diff_1_obj = pd.concat(diff_1_obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         diff_1_obj = diff_1_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
         
         diff_2 = diff_1_obj.diff()
         diff_2_obj = {i:diff_2.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        diff_2_obj = pd.concat(diff_2_obj, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        diff_2_obj = pd.concat(diff_2_obj, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         diff_2_obj = diff_2_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
         
         std_1 = {i:obj.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        std_1_obj = pd.concat(std_1, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        std_1_obj = pd.concat(std_1, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         std_1_obj = std_1_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
         
         std_2 = {i:std_1_obj.rolling(i, min_periods=rolling_list[0]).std() for i in rolling_list}
-        std_2_obj = pd.concat(std_2, axis=1).groupby(flow.config.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
+        std_2_obj = pd.concat(std_2, axis=1).groupby(flow.COLUMNS_INFO.code, axis=1).mean().stats.standard(axis=1)
         std_2_obj = std_2_obj.stats.neutral(neu_axis=1, pct=pct.rolling(3).mean()).resid * -1
         
         fac = pd.concat({i:j for i,j in enumerate([obj, diff_1_obj, diff_2_obj, std_1_obj, std_2_obj])}, axis=1)
-        fac = fac.groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        fac = fac.groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         
         #fac = barra.cn4.neutral(fac)
         
@@ -485,7 +485,7 @@ class main(meta, volatility):
         tu_std = barra.cn4.neutral(self.tu_std()) * 1.6
         
         fac = pd.concat({i:j for i,j in enumerate([amount_std, amount_z, tu_std])}, axis=1)
-        fac = fac.groupby(flow.config.COLUMNS_INFO.code, axis=1).mean()
+        fac = fac.groupby(flow.COLUMNS_INFO.code, axis=1).mean()
         fac = self.filter(fac)
         return fac
         

@@ -8,7 +8,7 @@ Created on Mon May 12 22:52:06 2025
 import re
 import factors
 import flow
-from flow.config import COLUMNS_INFO
+from flow import COLUMNS_INFO
 flow.data_init()
 import pandas as pd
 pd.capitalize()

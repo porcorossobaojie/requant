@@ -5,18 +5,17 @@ Created on Thu Feb 20 15:23:09 2025
 @author: Porco Rosso
 """
 
-import flow
-from flow import DB_INFO
+from libs import __flow__ as flow
 from typing import Dict, Any, List
 
 PROPERTY_ATTRS_DIC: Dict[str, str] = ({
     i.split('S_DQ_')[-1].lower():i 
-    for i in flow.stock.help('ashareeodprices')[flow.DB_INFO.columns_info].values 
+    for i in flow.stock.help('ashareeodprices')[flow.config.DB_INFO.columns_info].values 
     if 'S_DQ_' in i
     } |
     {
     i.split('S_DQ_')[-1].lower():i 
-    for i in flow.stock.help('ashareeodderivativeindicator')[flow.DB_INFO.columns_info].values 
+    for i in flow.stock.help('ashareeodderivativeindicator')[flow.config.DB_INFO.columns_info].values 
     if 'S_DQ_' in i
     })
 
